@@ -1,0 +1,25 @@
+<article class="two_column">
+	<p>Rivière réputée pour ses caprices, la Vilaine est aussi le trait d'union entre des paysages majestueux et des bourgs de charme aux rues chargées d'histoire.</p>
+	<p>La vallée marque le point de départ de nombreuses balades, le long de ses rives changeantes ou vers l'intérieur des terres.</p>
+	<figure><img src="modules/images/photo1.jpg" /></figure>
+</article>
+<article class="two_column">
+	<figure><img src="modules/images/photo3.jpg" /></figure>
+	<p>Sur sa rive droite, Béganne qui se situe entre Redon et Muzillac, est une commune du Morbihan d'environ 1400 habitants.</p>
+	<p>Cette dernière offre des paysages vallonnés et variés entre terre et eau. Elle est enrichie par un patrimoine chargé d'histoire tels son église romane, ses châteaux, ses lavoirs, ses fontaines, etc...</p>
+</article>
+<article class="two_column">	
+	<p>Tous ces monuments et paysages peuvent être découverts à pied, à vélo, ou à cheval par les nombreux chemins et sentiers balisés totalisant 80 km à travers la commune.</p>
+	<p>Par la route, le circuit touristique des coteaux de Vilaine, reliant la commune de Rieux au port de plaisance de Foleux en Béganne, permet également d'apprécier les charmes de cette vallée.</p>
+	<figure><img src="modules/images/photo2.jpg" /></figure>
+</article>
+<article>	
+	<p>Le port de Foleux, situé à 1 km de la safranière, peut être quant à lui une étape agréable lors de vos balades fluviales ; que vous veniez du nord par le canal de Nantes à Brest, ou du sud par l'océan en franchissant le barrage d'Arzal.</p>
+</article>
+<article class="two_column">
+	<figure><img src="modules/images/photo5.jpg" /></figure>
+    <figure><img src="modules/images/photo4.jpg" /></figure>
+</article>
+<article>
+	<p>Pour plus d'informations et de photos, rendez-vous sur <a href="http://www.beganne.fr" target="beganne">la commune de Béganne</a></p>
+</article>
