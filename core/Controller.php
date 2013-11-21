@@ -99,40 +99,15 @@ class Controller {
 	/**
 	*	Envoie de mail
 	**/
-	public function sendMail($mail){
+	public function getSMTPparams(){
 		$this->loadModel('Config');
-
 		$config=$this->Config->find(array(
 									'conditions'=>array('name'=>'SMTP'),
 									'fields'=>array('param', 'value')
 									));
-		$smtp= new stdClass;
 	    foreach ($config as $k =>$v) {
-	    	$param=$v->param;
-	    	$smtp->$param=$v->value;
+	    	$this->render->assignVar('mail','smtp',array($v->param=>$v->value));
 	    }
-
-	    $mail->IsHTML(true);
-	    $mail->CharSet = 'UTF-8';
-    
-	    //SMTP
-	    $mail->IsSMTP();
-	    $mail->SMTPAuth = true;
-	    $mail->Host = $smtp->host; //"mail.safrandevilaine.fr"
-	    $mail->Port = $smtp->port; //25
-	    $mail->Username = $smtp->username; //"contact@safrandevilaine.fr"
-	    $mail->Password = $smtp->password; //"GH19FXC4A"
-
-
-
-	    /*
-	    if(!$mail->Send()) {
-	    	return FALSE; 
-	    }else{
-	    	return TRUE;
-	    }*/
-	    $mail->ClearAddresses();
-	    return true;		
 	}
 }
 

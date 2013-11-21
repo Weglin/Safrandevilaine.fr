@@ -55,7 +55,6 @@ class ActualiteController extends Controller{
 		if (empty($actualites)){
 			$this->setInfos ('Aucune actualité en base de données', 'info');
 		}
-		$this->infos();
 		$this->render->assignVar('screen','tpl',array('actualites'=> $actualites));
 	}
 
@@ -121,8 +120,6 @@ class ActualiteController extends Controller{
 			$actualite=$this->request->data;
 			$actualite->id=null;
 		}
-
-		$this->infos();
 		$this->render->addPlugin('screen','tinyMCE');
 		$this->render->assignVar('screen','tpl',array('actualite'=> $actualite));
 	}

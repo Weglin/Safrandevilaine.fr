@@ -4,9 +4,7 @@ class ContactController extends Controller{
 
 	public function __construct($request){
 		parent::__construct($request);
-		require_once ROOT.DS.'plugins'.DS.'phpmailer'.DS.'PHPMailerAutoload.php';
 		$this->loadModel('Contact');
-		$this->mail= new phpmailer();
 	}
 
 	public function view(){
@@ -19,69 +17,39 @@ class ContactController extends Controller{
 		if(!empty($this->request->data)){
 			$data=$this->request->data;
 
-			$validated=$this->Contact->validates($data);
+			$this->loadModel('Config');
+			$data->to=$this->Config->findFirst(array(
+												'conditions'=>array('name'=>'email',
+																	'param'=>'contact'),
+												'fields'=>'value'))->value;
 			//on vérifie les données
+			$validated=$this->Contact->validates($data);
 			if($validated===true){
-				//on crééer le contenu du mail
-				$this->prepareMail($data);
-				
-				if ($this->sendMail($this->mail)){
-					//affiche la confirmation de l'envoie
-					$this->setInfos('Votre demande de contact à bien été envoyé','success');
-					$this->render->assignVar('screen','tpl',array('file'=> './send.tpl'));
-				}else{
-					//ou on notifie l'erreur d'envoie
-					$this->setInfos('Erreur : une erreur s\'est produite lors de l\'envoie, merci de rééssayer','error');
-					$this->render->assignVar('screen','tpl',array('data'=> $data));
-				}
-			}elseif(is_array($validated)){
-				foreach($validated as $k=>$v){
-					$this->setInfos('Erreur : '.$v,'error');
-					$data->$k=null;					
-				}
+				//on charge les paramètres SMTP
+				$this->getSMTPparams();
 
-				$this->render->assignVar('screen','tpl',array('data'=> $data));
+				//on envoie l'entête du mail
+				$this->render->assignVar('mail','header', array(
+														'email'=>$data->email,
+														'name'=>$data->name,
+														'subject'=>$data->subject,
+														'to'=>$data->to));
+				//on envoie les infos du mail
+				$this->render->assignVar('mail','tpl', array('data'=>$data));
+
 			}else{
-				$this->setInfos('Erreur : une erreur s\'est produite lors de la vérification de vos données, merci de rééssayer','error');
-				$this->render->assignVar('screen','tpl',array('data'=> $data));
+				foreach ($validated as $k=>$v){
+					$this->setInfos ($v, 'info');
+				}
+				$this->setInfos('Erreur : Les infos saisies ne semblent pas correctes, merci de vérifier','error');
 			}
 		}else{
 			$data->name="";
 			$data->email="";
 			$data->content="";
-			$this->render->assignVar('screen','tpl',array('data'=> $data));
 		}
-
-		//on envoie les messages d'erreur ou de succes
-		$this->infos();
+		//on renvoie les données du formulaire en cas d'échec
+		$this->render->assignVar('screen','tpl',array('data'=> $data));
 	}
-
-	public function prepareMail($data){
-		$this->loadModel('Config');
-		$to=$this->Config->findFirst(array(
-							'conditions'=>array('name'=>'contact',
-												'param'=>'email'),
-							'fields'=>'value'));
-
-		$this->mail->From 		= $data->email; 
-	    $this->mail->FromName 	= $data->name;
-	    $this->mail->Subject 	= $data->subject; 
-	    $this->mail->Body 		= $this->writeMail($data); 
-	    $this->mail->AddAddress($to);
-	} 
-
-	public function writeMail($data){
-		//on rédige le message
-		$message ='<HTML><BODY>';
-		$message.='<div style="height:20px;"></div>';
-		$message.='<span style="font-size=14px;">Vous avez une demande de contact de la part de :</span><br/>';
-		$message.='<bold style="margin-left:15px;"> Nom :</bold> '.$data->name.'<br />';
-		$message.='<bold style="margin-left:15px;"> E-mail :</bold> '.$data->email.'<br />';
-		$message.='<div style="height:20px;"></div>';
-		$message.='<span style="font-size=14px;">Son message est le suivant :</span><br/>';
-		$message.='<div style="margin-left:15px;">'.$data->content.'</div>';
-		$message.='</BODY></HTML>';
-	}
-
 }
 ?>

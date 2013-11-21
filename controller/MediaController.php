@@ -29,7 +29,6 @@ class MediaController extends Controller{
 												'conditions'=>array('dos.type'=>'medias')));
 		}
 		$this->render->assignVar('screen','tpl',array('dirNow'=> $dirNow,'images'=> $images));
-		$this->infos();
 	}
 
 	function admin_Jadd($type='img'){
@@ -97,7 +96,6 @@ class MediaController extends Controller{
 				}
 			}
 		}
-		$this->infos();
 		$this->dir('medias');
 		$this->render->assignVar('screen','tpl',array('dirNow'=> $dirNow,'directories'=> $this->dossiers));
 	}

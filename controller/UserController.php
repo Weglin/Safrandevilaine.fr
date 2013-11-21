@@ -26,7 +26,6 @@ class UserController extends Controller{
 		if (empty($users)){
 			$this->setInfos ('Aucun utilisateur en base de données', 'info');
 		}
-		$this->infos();
 		$this->render->assignVar('screen','tpl',array('users'=> $users));
 	}
 
@@ -84,8 +83,6 @@ class UserController extends Controller{
 			$user=$this->request->data;
 			$user->id=null;
 		}
-
-		$this->infos();
 		$this->render->assignVar('screen','tpl',array('user'=> $user));
 	}
 

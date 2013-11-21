@@ -21,7 +21,10 @@ class Contact extends Model {
 				'message' => "Cet Email est invalide"),			
 			'content'=> array (
 				'rule' => 'notEmpty',
-				'message' => "Votre message est vide, merci de préciser votre demande"),
+				'message' => "Votre message est vide, merci de préciser votre demande",
+			'to'=>array(
+				'rule'=> 'mail',
+				'message' => "Un problème nous empêche d'envoyer le mail, merci de reéssayer ultérieurement")),
 		);
 	}
 }

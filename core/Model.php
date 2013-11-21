@@ -164,29 +164,35 @@ class Model {
 							$this->errors[$k]=$v['message'];		
 						}
 						break;
+
 					case 'slug' :
 						if (!preg_match('/^([[:alnum:]\-]+)$/', $data->$k)){
 							$this->errors[$k]=$v['message'];
 						}
 						break;
+
 					case 'cPostal' :
-						switch ($data->pays) {
-							case 'France' :
-								if (!preg_match('/^((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B))[0-9]{3}$/', $data->$k)){
-									$this->errors[$k]=$v['message'];
-								}
-								break;
-							case 'United Kingdom' :
-								if (!preg_match('/^((GIR 0AA)|((([^QVX][0-9][0-9]?)|(([^QVX][^IJZ][0-9][0-9]?)|(([^QVX][0-9][A-HJKSTUW])|([^QVX][^IJZ][0-9][ABEHMNPRVWXY])))) [0-9][^CIKMOV]{2}))$/', $data->$k)){
-									$this->errors[$k]=$v['message'];
-								}
+						if (isset($data->pays)){
+							switch ($data->pays) {
+								case 'France' :
+									if (!preg_match('/^((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B))[0-9]{3}$/', $data->$k)){
+										$this->errors[$k]=$v['message'];
+									}
+									break;
+								case 'United Kingdom' :
+									if (!preg_match('/^((GIR 0AA)|((([^QVX][0-9][0-9]?)|(([^QVX][^IJZ][0-9][0-9]?)|(([^QVX][0-9][A-HJKSTUW])|([^QVX][^IJZ][0-9][ABEHMNPRVWXY])))) [0-9][^CIKMOV]{2}))$/', $data->$k)){
+										$this->errors[$k]=$v['message'];
+									}
+							}	
 						}
 						break;
+
 					case 'mail' :
 						if (!preg_match('/^[[:alnum:]]([-_.]?[[:alnum:]])+_?@[[:alnum:]]([-.]?[[:alnum:]])+\.[[:alpha:]]{2,6}$/', $data->$k)) {
 							$this->errors[$k]=$v['message'];
 						}
 						break;
+
 					case 'password' :
 						$k2= $k.'2';
 						if (strlen($data->$k)<8){
@@ -196,11 +202,13 @@ class Model {
 							$this->errors[$k2]=$v['message']['idem'];
 						}
 						break;
+
 					case 'entier' :
 						if(!StringIsInt($data->$k)){
 							$this->errors[$k]=$v['message'];
 						}
 						break;
+
 					default :
 						$this->errors[$k]="La règle d'enregistrement n'est pas définie pour le champ ".$k;	
 				} 
@@ -211,6 +219,10 @@ class Model {
 			return $this->errors;
 		}
 		return true;
+	}
+
+	public function setCustomDataRule($dataRule){
+		$this->dataRule=$dataRule;
 	}
 }
 ?>

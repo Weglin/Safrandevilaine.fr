@@ -12,6 +12,9 @@ class Render implements SplSubject{
 
 	public function fetch(){
 		$this->loadRenders();
+		if (isset($this->MailRender)){
+			$this->MailRender->update($this);
+		}
 		if (isset($this->ScreenRender)){
 			$this->ScreenRender->update($this);
 		}
@@ -30,8 +33,6 @@ class Render implements SplSubject{
 
 	public function addPlugin($media, $plugin){
 		$this->output[$media]['plugins'][]=$plugin;
-		//$this->output[$media]['plugins'][]='plugintest';
-		//debug($this->output[$media]);
 	}
 
 	public function removePlugin($media, $plugin){

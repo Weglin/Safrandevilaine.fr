@@ -36,7 +36,6 @@ class PageController extends Controller{
 		if (empty($pages)){
 			$this->setInfos('Aucune page en base de données','info');
 		}
-		$this->infos();
 		$this->render->assignVar('screen','tpl',array('pages'=> $pages));
 	}
 
@@ -98,8 +97,6 @@ class PageController extends Controller{
 			$page=$this->request->data;
 			$page->id=null;
 		}
-		
-		$this->infos();
 		$this->render->addPlugin('screen','tinyMCE');
 		$this->render->assignVar('screen','tpl',array('page'=> $page));
 	}

@@ -34,7 +34,6 @@ class CommerceController extends Controller{
 		if (empty($commerces)){
 			$this->setInfos('Aucun commerce en base de données','info');
 		}
-		$this->infos();
 		$this->render->assignVar('screen','tpl',array('commerces'=> $commerces));
 	}
 
@@ -98,8 +97,6 @@ class CommerceController extends Controller{
 			$commerce=$this->request->data;
 			$commerce->id=null;
 		}
-
-		$this->infos();
 		$this->render->assignVar('screen','tpl',array('commerce'=> $commerce));
 	}
 
