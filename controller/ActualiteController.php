@@ -32,9 +32,11 @@ class ActualiteController extends Controller{
 		$startLinkPage= (($this->request->page-$maxLinkPage)<1) ? 1 : $this->request->page-$maxLinkPage ;
 		$endLinkPage= ($this->request->page+($maxLinkPage-1)>=$nbPages) ? $nbPages : $this->request->page+($maxLinkPage-1);
 		
+		$this->render->assignVar('screen','tpl',array('startLinkPage'=> $startLinkPage, 'endLinkPage'=> $endLinkPage,'actualites'=>$actualites) )
+		/*
 		$this->tpl->assign('startLinkPage', $startLinkPage);
 		$this->tpl->assign('endLinkPage', $endLinkPage);
- 		$this->tpl->assign('actualites',$actualites);	
+ 		$this->tpl->assign('actualites',$actualites);	*/
 	}
 
 	function view($id){
