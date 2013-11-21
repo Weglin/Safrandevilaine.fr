@@ -17,7 +17,7 @@ class MediaController extends Controller{
 		//Assignation des valeurs du select "dossier"
 		$this->dossiers[$dirNow]='TOUS';
 		$this->dir('medias');
-		$this->tpl->assign('directories',$this->dossiers);
+		$this->render->assignVar('screen','tpl',array('directories'=> $this->dossiers));
 
 		if($this->request->data && $this->request->data->replist!='defaut'){
 			$dirNow=$this->request->data->replist;
@@ -28,9 +28,7 @@ class MediaController extends Controller{
 			$images=$this->Media->find(array(	'fields'=>array('media.id AS id','media.name AS titre','dos.name AS dir','media.file AS fileName'),
 												'conditions'=>array('dos.type'=>'medias')));
 		}
-
-		$this->tpl->assign('dirNow',$dirNow);
-		$this->tpl->assign('images',$images);
+		$this->render->assignVar('screen','tpl',array('dirNow'=> $dirNow,'images'=> $images));
 		$this->infos();
 	}
 
@@ -101,8 +99,7 @@ class MediaController extends Controller{
 		}
 		$this->infos();
 		$this->dir('medias');
-		$this->tpl->assign('dirNow',$dirNow);
-		$this->tpl->assign('directories',$this->dossiers);
+		$this->render->assignVar('screen','tpl',array('dirNow'=> $dirNow,'directories'=> $this->dossiers));
 	}
 
 	public function admin_index(){
@@ -121,12 +118,6 @@ class MediaController extends Controller{
 		$media=$this->Media->findFirst(array(	'fields'=>array('media.id AS id, media.name AS name, media.id_dossier AS id_rep, dos.name AS rep, media.file as filename'),
 												'conditions'=>array('media.id'=>$id)));
 		if (!empty($media)){
-			/*
-			$media->id
-			$media->name
-			$media->rep
-			$media->filename
-			*/
 			/*On définie le répertoire de travail*/
 			$dir=WEBROOT.DS.'medias'.DS.$type.DS.$media->rep;
 
@@ -179,10 +170,7 @@ class MediaController extends Controller{
 	}
 
 	public function repExist($rep){
-		$res=null;
 		//recherche si le répertoire demandé par le champ texte existe déjà dans les répertoires référencés
-		//si il n'existe pas renvoyer false
-		//si il existe déjà renvoyer l'id du répertoire.
 		return $this->Dossier->findFirst(array('fields'=> array('id'),
 									'conditions'=> array('name'=>$rep)));
 	}

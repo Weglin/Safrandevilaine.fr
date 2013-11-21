@@ -5,7 +5,7 @@ class UserController extends Controller{
 		parent::__construct($request);
 		$this->loadModel('User');
 
-		$this->tpl->assign('combo_pays',array('France'=>'France',"United Kingdom"=>"United Kingdom",'Autre'=>'Autre'));
+		$this->render->assignVar('screen','tpl',array('combo_pays'=> array('France'=>'France',"United Kingdom"=>"United Kingdom",'Autre'=>'Autre')));
 	}
 
 	/**
@@ -14,7 +14,7 @@ class UserController extends Controller{
 	public function add(){
 		$user = new stdClass();
 		$user->created= date('Y-m-d H:i:s');
-		$this->tpl->assign('user',$user);
+		$this->render->assignVar('screen','tpl',array('user'=> $user));
 	}
 
 
@@ -27,7 +27,7 @@ class UserController extends Controller{
 			$this->setInfos ('Aucun utilisateur en base de données', 'info');
 		}
 		$this->infos();
-		$this->tpl->assign('users',$users);	
+		$this->render->assignVar('screen','tpl',array('users'=> $users));
 	}
 
 	/**
@@ -36,7 +36,7 @@ class UserController extends Controller{
 	public function admin_add(){
 		$user = new stdClass();
 		$user->created= date('Y-m-d H:i:s');
-		$this->tpl->assign('user',$user);
+		$this->render->assignVar('screen','tpl',array('user'=> $user));
 	}
 
 	/**
@@ -86,7 +86,7 @@ class UserController extends Controller{
 		}
 
 		$this->infos();
-		$this->tpl->assign('user',$user);
+		$this->render->assignVar('screen','tpl',array('user'=> $user));
 	}
 
 	/**

@@ -6,11 +6,11 @@ class ConfigController extends Controller{
 		$this->loadModel('Config');
 	}
 
-
 	/**
 	* Affichage des options générales
 	**/
 	public function admin_index() {
+		$this->render->addMedia('screen');
 		$this->infos();
 	}
 
@@ -34,7 +34,7 @@ class ConfigController extends Controller{
 				}
 				$this->setInfos ('Erreur : Les paramètres n\'ont pu être modifiés', 'error');
 			}
-			$this->tpl->assign('smtp',$data);				
+			$this->render->assignVar('screen','tpl',array('smtp'=> $data));
 		}else{
 			$config=$this->Config->find(array(
 									'conditions'=>array('name'=>'SMTP'),
@@ -45,13 +45,10 @@ class ConfigController extends Controller{
 	    		$param=$v->param;
 	    		$smtp->$param=$v->value;
 	    	}
-	    	$this->tpl->assign('smtp',$smtp);
+	    	$this->render->assignVar('screen','tpl',array('smtp'=> $smtp));
 		}
-
-
 		$this->infos();
 	}
-
 }
 
 ?>

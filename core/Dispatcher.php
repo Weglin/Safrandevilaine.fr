@@ -23,7 +23,7 @@ class Dispatcher {
 		//fonction de rappel (array(class, méthode de la class), tableau de paramètres) càd permet d'utiliser une $méthode d'une $class
 		call_user_func_array(array($controller,$action),$this->request->params);
 		//afficher la vue
-		$controller->render($action);
+		$controller->render->fetch();
 	}
 
 	function error($message){

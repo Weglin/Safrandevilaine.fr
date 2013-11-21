@@ -21,20 +21,12 @@ class PageController extends Controller{
 					if (empty($page)){
  						$this->e404('Erreur : <em>'.$slug.'-'.$id.'</em> est une page introuvable');
  					}
-	 				$this->tpl->assign('page',$page);
+ 					$this->render->assignVar('screen','tpl',array('page'=> $page));	 				
 				}
 			}
 		}
  		else $this->e404('Erreur : Page introuvable ');
 	}
-
-	/**
-	* Affichage de la page d'accueil de l'administration
-	**/
-	public function admin_accueil(){
-		$this->infos();
-	}
-
 
 	/**
 	* Fonction permettant l'affichage des pages statiques en vue de leur gestion
@@ -45,7 +37,7 @@ class PageController extends Controller{
 			$this->setInfos('Aucune page en base de données','info');
 		}
 		$this->infos();
- 		$this->tpl->assign('pages',$pages);	
+		$this->render->assignVar('screen','tpl',array('pages'=> $pages));
 	}
 
 	/**
@@ -58,7 +50,7 @@ class PageController extends Controller{
 			if (empty($page)){
  				$this->e404('Erreur : Page <em>'.$id.'</em> introuvable');
  			}
-	 		$this->tpl->assign('page',$page);	
+ 			$this->render->assignVar('screen','tpl',array('page'=> $page));
 		}
  		else $this->e404('Erreur : Page introuvable (id null)');
 
@@ -76,7 +68,6 @@ class PageController extends Controller{
 	}
 
 	public function admin_edit($id=null){
-		$this->addTinyMCE();
 		if($this->request->data){
 			//demande de sauvegarde des nouvelles données
 			$result = $this->Page->save($this->request->data);
@@ -88,7 +79,7 @@ class PageController extends Controller{
 					$id=$this->Page->lastEntryId();
 				}
 				
-			} else {
+			}else{
 				foreach ($result as $k=>$v){
 					$this->setInfos ($v, 'info');
 				}
@@ -96,8 +87,7 @@ class PageController extends Controller{
 					$this->setInfos ('Erreur : la page "'.$this->request->data->name.'" n\'a pas été modifiée', 'error');
 				}else{
 					$this->setInfos ('Erreur : la page "'.$this->request->data->name.'" n\'a pas pu être créée', 'error');
-				}
-				
+				}				
 			}
 		}
 		
@@ -108,18 +98,17 @@ class PageController extends Controller{
 			$page=$this->request->data;
 			$page->id=null;
 		}
-
-	
-
+		
 		$this->infos();
-		$this->tpl->assign('page',$page);
+		$this->render->addPlugin('screen','tinyMCE');
+		$this->render->assignVar('screen','tpl',array('page'=> $page));
 	}
 
 	public function admin_add(){
-		$this->addTinyMCE();
 		$page = new stdClass();
 		$page->created= date('Y-m-d H:i:s');
-		$this->tpl->assign('page',$page);
+		$this->render->addPlugin('screen','tinyMCE');
+		$this->render->assignVar('screen','tpl',array('page'=> $page));
 	}
 
 }

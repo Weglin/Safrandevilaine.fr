@@ -110,7 +110,7 @@ class Model {
 		$key=$this->primaryKey;
 
 		//demande de validation des données
-		if ($this->validates($data)==true){
+		if ($this->validates($data)===true){
 			$data = $this->cleaning($data,"pwd2");
 
 			//enregistrement des données

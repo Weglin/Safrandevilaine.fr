@@ -7,6 +7,7 @@ require ROOT.DS.'config'.DS.'conf.php';
 require ROOT.DS.'plugins/smarty/Smarty.class.php';
 
 require 'Request.php';
+require 'Render.php';
 require 'Controller.php';
 require 'Requete.php';
 require 'Model.php';

@@ -2,9 +2,9 @@
 
 class Conf {
 
-	static $debug = 2;
+	static $debug= 2;
 
-	static $databases = array(
+	static $databases= array(
 			'default'=>array(
 				'host' => 'localhost',
 				'database' =>'safrandevilaine',
@@ -12,6 +12,7 @@ class Conf {
 				'password'=>''
 			)
 		);
+	static $layout= 'public_user'; 
 }
 
 // Page par défaut (accueil)

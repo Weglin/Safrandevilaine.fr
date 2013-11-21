@@ -1,26 +1,27 @@
 <?php
 class Render implements SplSubject{
 
-	public $layout = 'public_user';
 	public $output= array();
-	public $request=null;
+	public $request;
 	protected $observers=array();
+
+	function __construct($request){
+		$this->request=$request;
+	}
 	
 
-	public function fetch($request){
-		$this->request=$request;
-		foreach ($this->output as $k=>$v){
-			$name = ucfirst($k).'Render';
-			$file = ROOT.DS.'render'.DS.$name.'.php';
-			if (file_exists($file)){
-				require_once $file;
-			}
-			$$name = new $name();
+	public function fetch(){
+		$this->loadRenders();
+		if (isset($this->ScreenRender)){
+			$this->ScreenRender->update($this);
 		}
-		
-		if (isset($ScreenRender)){
-			$ScreenRender->update($this);
-		}
+	}
+
+	public function e404(){
+		$file= ROOT.DS.'render'.DS.'ScreenRender.php';
+		if (file_exists($file))	require_once $file;
+		$ScreenRender= new ScreenRender();
+		$ScreenRender->e404($this);
 	}
 
 	public function addMedia($media){
@@ -28,13 +29,31 @@ class Render implements SplSubject{
 	}
 
 	public function addPlugin($media, $plugin){
-		$this->output[$media]['plugins']=$plugin;
+		$this->output[$media]['plugins'][]=$plugin;
+		//$this->output[$media]['plugins'][]='plugintest';
+		//debug($this->output[$media]);
+	}
+
+	public function removePlugin($media, $plugin){
+
+		if (is_int ($key = array_search($plugin, $this->output[$media]['plugins'], true))) unset($this->output[$media]['plugins'][$key]);
 	}
 
 	public function assignVar($media, $param, $var){
 		foreach ($var as $k=>$v){
 			$this->output[$media][$param][$k]=$v;	
 		}		
+	}
+
+	public function loadRenders(){
+		foreach ($this->output as $k=>$v){
+			$name = ucfirst($k).'Render';
+			$file = ROOT.DS.'render'.DS.$name.'.php';
+			if (file_exists($file)){
+				require_once $file;
+			}
+			$this->$name = new $name();
+		}
 	}
 
 	public function attach(SplObserver $observer){

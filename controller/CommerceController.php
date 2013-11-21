@@ -21,8 +21,7 @@ class CommerceController extends Controller{
 				$this->e404('Aucun <em>'.$slug.'</em> n\'est référencé actuellement.');
  			}
  			if ($slug=='degustation'){$titre="Sites de dégustation";}else{$titre="Points de vente";}
- 			$this->tpl->assign('titre',$titre);
-	 		$this->tpl->assign('commerces',$commerces);
+ 			$this->render->assignVar('screen','tpl',array('titre'=> $titre,'commerces'=> $commerces));
 		}
  		else $this->e404('Erreur : Page introuvable ');
 	}
@@ -36,7 +35,7 @@ class CommerceController extends Controller{
 			$this->setInfos('Aucun commerce en base de données','info');
 		}
 		$this->infos();
- 		$this->tpl->assign('commerces',$commerces);	
+		$this->render->assignVar('screen','tpl',array('commerces'=> $commerces));
 	}
 
 	/**
@@ -49,7 +48,7 @@ class CommerceController extends Controller{
 			if (empty($commerce)){
  				$this->e404('Erreur : Le commerce <em>'.$id.'</em> introuvable');
  			}
-	 		$this->tpl->assign('commerce',$commerce);	
+ 			$this->render->assignVar('screen','tpl',array('commerce'=> $commerce));
 		}
  		else $this->e404('Erreur : Commerce introuvable (id null)');
 
@@ -61,7 +60,7 @@ class CommerceController extends Controller{
 	public function admin_add(){
 		$commerce = new stdClass();
 		$commerce->created= date('Y-m-d H:i:s');
-		$this->tpl->assign('commerce',$commerce);
+		$this->render->assignVar('screen','tpl',array('commerce'=> $commerce));
 	}
 
 	/**
@@ -101,7 +100,7 @@ class CommerceController extends Controller{
 		}
 
 		$this->infos();
-		$this->tpl->assign('commerce',$commerce);
+		$this->render->assignVar('screen','tpl',array('commerce'=> $commerce));
 	}
 
 	/**

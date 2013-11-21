@@ -32,11 +32,7 @@ class ActualiteController extends Controller{
 		$startLinkPage= (($this->request->page-$maxLinkPage)<1) ? 1 : $this->request->page-$maxLinkPage ;
 		$endLinkPage= ($this->request->page+($maxLinkPage-1)>=$nbPages) ? $nbPages : $this->request->page+($maxLinkPage-1);
 		
-		$this->render->assignVar('screen','tpl',array('startLinkPage'=> $startLinkPage, 'endLinkPage'=> $endLinkPage,'actualites'=>$actualites) )
-		/*
-		$this->tpl->assign('startLinkPage', $startLinkPage);
-		$this->tpl->assign('endLinkPage', $endLinkPage);
- 		$this->tpl->assign('actualites',$actualites);	*/
+		$this->render->assignVar('screen','tpl',array('startLinkPage'=> $startLinkPage, 'endLinkPage'=> $endLinkPage, 'actualites'=>$actualites));
 	}
 
 	function view($id){
@@ -48,7 +44,7 @@ class ActualiteController extends Controller{
 		if (empty($page)){
  			$this->e404('Erreur : Page <em>'.$id.'</em> introuvable');
  		}
- 		$this->tpl->assign('page',$page);	
+ 		$this->render->assignVar('screen','tpl',array('page'=> $page));
 	}
 
 	/**
@@ -60,7 +56,7 @@ class ActualiteController extends Controller{
 			$this->setInfos ('Aucune actualité en base de données', 'info');
 		}
 		$this->infos();
-		$this->tpl->assign('actualites',$actualites);	
+		$this->render->assignVar('screen','tpl',array('actualites'=> $actualites));
 	}
 
 	/**
@@ -73,7 +69,7 @@ class ActualiteController extends Controller{
 			if (empty($actualite)){
  				$this->e404('Erreur : Page <em>'.$id.'</em> introuvable');
  			}
-	 		$this->tpl->assign('actualite',$actualite);	
+ 			$this->render->assignVar('screen','tpl',array('actualite'=> $actualite));
 		}
  		else $this->e404('Erreur : Page introuvable (id null)');
 
@@ -83,17 +79,16 @@ class ActualiteController extends Controller{
 	*	Permet d'ajouter une nouvelle actualité
 	**/
 	public function admin_add(){
-		$this->addTinyMCE();
 		$actualite = new stdClass();
 		$actualite->created= date('Y-m-d H:i:s');
-		$this->tpl->assign('actualite',$actualite);
+		$this->render->addPlugin('screen','tinyMCE');
+		$this->render->assignVar('screen','tpl',array('actualite'=> $actualite));
 	}
 
 	/**
 	*	Permet d'éditer une actualité
 	**/
 	public function admin_edit($id=null){
-		$this->addTinyMCE();
 		if($this->request->data){
 			//demande de sauvegarde des nouvelles données
 			$result= $this->Actualite->save($this->request->data);
@@ -128,7 +123,8 @@ class ActualiteController extends Controller{
 		}
 
 		$this->infos();
-		$this->tpl->assign('actualite',$actualite);
+		$this->render->addPlugin('screen','tinyMCE');
+		$this->render->assignVar('screen','tpl',array('actualite'=> $actualite));
 	}
 
 	/**

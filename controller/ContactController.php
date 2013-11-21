@@ -11,7 +11,7 @@ class ContactController extends Controller{
 
 	public function view(){
 		//par défaut on affiche le formulaire de contact
-		$this->tpl->assign('file','./formulaire.tpl');
+		$this->render->assignVar('screen','tpl',array('file'=> './formulaire.tpl'));
 
 		//on initialise quelques variables
 		$data= new stdClass();
@@ -28,27 +28,28 @@ class ContactController extends Controller{
 				if ($this->sendMail($this->mail)){
 					//affiche la confirmation de l'envoie
 					$this->setInfos('Votre demande de contact à bien été envoyé','success');
-					$this->tpl->assign('file','./send.tpl');	
+					$this->render->assignVar('screen','tpl',array('file'=> './send.tpl'));
 				}else{
 					//ou on notifie l'erreur d'envoie
 					$this->setInfos('Erreur : une erreur s\'est produite lors de l\'envoie, merci de rééssayer','error');
-					$this->tpl->assign('data',$data);
+					$this->render->assignVar('screen','tpl',array('data'=> $data));
 				}
 			}elseif(is_array($validated)){
 				foreach($validated as $k=>$v){
 					$this->setInfos('Erreur : '.$v,'error');
 					$data->$k=null;					
 				}
-				$this->tpl->assign('data',$data);
+
+				$this->render->assignVar('screen','tpl',array('data'=> $data));
 			}else{
 				$this->setInfos('Erreur : une erreur s\'est produite lors de la vérification de vos données, merci de rééssayer','error');
-				$this->tpl->assign('data',$data);
+				$this->render->assignVar('screen','tpl',array('data'=> $data));
 			}
 		}else{
 			$data->name="";
 			$data->email="";
 			$data->content="";
-			$this->tpl->assign('data',$data);
+			$this->render->assignVar('screen','tpl',array('data'=> $data));
 		}
 
 		//on envoie les messages d'erreur ou de succes

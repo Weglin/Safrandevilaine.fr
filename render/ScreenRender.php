@@ -4,8 +4,6 @@ class ScreenRender implements SplObserver {
 	var $tpl;
 
 	function __construct(){
-		header("Cache-Control: no-cache, must-revalidate");
-		
 		// Initialisation Smarty
 		$this->tpl = new Smarty();
 		$this->tpl->assign('BASE_URL',BASE_URL);
@@ -13,12 +11,12 @@ class ScreenRender implements SplObserver {
 	}
 
 	public function update(SplSubject $render){
-
-
-
 		//debug('on est dans le screenRender');
 		//debug($render->output);
-		if (isset($render->output['screen']['plugins']) && $render->output['screen']['plugins']=="tinyMCE") $this->addTinyMCE();
+		header("Cache-Control: no-cache, must-revalidate");
+		if (isset($render->output['screen']['plugins'])){
+			if (is_int ($key = array_search('tinyMCE', $render->output['screen']['plugins'], true))) $this->addTinyMCE();
+		} 
 
 		if ($render->request->prefix=='admin'){
 			$action='admin_'.$render->request->action;
@@ -28,26 +26,42 @@ class ScreenRender implements SplObserver {
 
 		$view = _TPL_.DS.$render->request->controller.DS.$action.'.tpl';
 
-		if (isset($render->output['screen']['tpl']) && !empty($render->output['screen']['tpl'])){
-			foreach ($render->output['screen']['tpl'] as $k=>$v){
+		$this->assignVar($render->output);
+		$this->tpl->assign('body',$this->tpl->fetch($view));
+
+		$this->tpl->display(_TPL_.DS.'layout'.DS.$this->layout($render->request).'.tpl');
+	}
+
+	public function e404(SplSubject $render){
+		header("HTTP/1.0 404 Not Found");
+		$this->assignVar($render->output);
+		$this->tpl->assign('body',$this->tpl->fetch(_TPL_.DS.'errors'.DS.'404.tpl'));
+		$this->tpl->display(_TPL_.DS.'layout'.DS.$this->layout($render->request).'.tpl');
+
+	}
+
+	public function assignVar($output){
+		if (isset($output['screen']['tpl']) && !empty($output['screen']['tpl'])){
+			foreach ($output['screen']['tpl'] as $k=>$v){
 				$this->tpl->assign($k,$v);
 			}
 		}
+	}
 
-		$this->tpl->assign('body',$this->tpl->fetch($view));
-
-		//choix du layout
-		if (isset($render->request) && $render->request->prefix==true){
-			if ($render->request->controller=='media' && strpos($render->request->action, 'J')===0){
-				$render->layout='modal';
+	public function layout($request){
+		if (isset($request) && $request->prefix==true){
+			if ($request->controller=='media' && strpos($request->action, 'J')===0){
+				$layout='modal';
 			} else {
-				$render->layout='admin';
+				$layout='admin';
 			}
+		}else{
+			$layout=Conf::$layout;
 		}
 		if (Conf::$debug>2){
-			$render->layout='test_css';
+			$layout='test_css';
 		}
-		$this->tpl->display(_TPL_.DS.'layout'.DS.$render->layout.'.tpl');
+		return $layout;	
 	}
 
 	/**
