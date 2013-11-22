@@ -1,4 +1,3 @@
-{$Infos}
 <form action="{Router::url('contact')}" method="post" class="contact">
     {Form::input('subject','','Demande de contact (site Web)', 'hidden')}
     <fieldset>

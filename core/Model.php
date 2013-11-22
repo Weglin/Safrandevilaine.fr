@@ -62,7 +62,7 @@ class Model {
 
 		if (isset($req['conditions'])){
 			foreach ($req['conditions'] as $k=>$v) {
-				$this->requete->where($k, $v);
+				$this->requete->where($k, $v);	
 			}			
 		}
 

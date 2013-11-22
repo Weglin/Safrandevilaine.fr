@@ -10,11 +10,15 @@ class ConfigController extends Controller{
 	* Affichage des options générales
 	**/
 	public function admin_index() {
-		$dataRuleEmail = array (
-			'contact'=> array (
+		$dataRuleEmail = array(
+			'contact'=> array(
 				'rule' => 'mail',
 				'message'=> "L' e-mail de contact doit être au format user@domaine.com"),
 		);
+		$dataRuleGeneral = array(
+			'shortURL'=> array(
+				'rule'=> 'slug',
+				'message'=>"Le raccourci choisi ne doit comporter que des caractères alphanumériques"));
 
 		if(!empty($this->request->data)){
 			//on simplifie le nom de la variable
@@ -36,24 +40,37 @@ class ConfigController extends Controller{
 			}
 			
 		}
-		$configMail=$this->Config->find(array(
-									'conditions'=>array('name'=>'email',
-														'param'=>'contact'),
+		$config=$this->Config->find(array(
+									'conditions'=>array('name'=>'email'),
 									'fields'=>array('name','param','value')));
-		
-		foreach ($configMail as $k =>$v) {
+		$config=array_merge($config,$this->Config->find(array(
+									'conditions'=>array('name'=>'general'),
+									'fields'=>array('name','param','value'))));
+
+		foreach ($config as $k =>$v) {
 	    	$this->render->assignVar('screen','tpl',array($v->name.ucfirst($v->param) => $v->value));
 	    }
 		
 	}
 
-	public function admin_SMTP(){
+	public function admin_smtp(){
 		//on initialise les variables
 		$smtp= new stdClass;
+		$smtp->active = 0;
 		$smtp->host ='';
 		$smtp->port ='';
 		$smtp->username ='';
 		$smtp->password ='';
+		$smtp->secure = 'NON';
+
+		$config=$this->Config->find(array(
+									'conditions'=>array('name'=>'ConnSMTPType'),
+									'fields'=>array('value','param')));
+
+		foreach($config as $k=>$v){
+			$combo_secure[$v->value]=$v->param;
+		}
+		$this->render->assignVar('screen','tpl',array('combo_secure'=> $combo_secure));
 
 		$dataRuleSMTP = array(
 			'host' => array(
@@ -72,6 +89,7 @@ class ConfigController extends Controller{
 		if (!empty($this->request->data)){
 			//on simplifie le nom de la variable
 			$data=$this->request->data;
+			debug($data);
 			$this->Config->setCustomDataRule($dataRuleSMTP);
 			$result=$this->Config->save($data);
 			if($result===true){

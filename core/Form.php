@@ -13,7 +13,8 @@ class Form{
 			case 'checkbox':
 				$html.='<input type="hidden" name="'.$name.'" value="0">';
 				$html.='<input type="checkbox" name="'.$name.'" id="input'.$name.'" ';
-				if ($value==1){$html.='checked="checked" ';}
+				if (intval($value)==1){
+					$html.='checked="checked" ';}
 				$html.= 'value="1" />';
 				break;
 			case 'hidden':

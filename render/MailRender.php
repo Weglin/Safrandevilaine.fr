@@ -15,12 +15,12 @@ class MailRender implements SplObserver {
 	}
 
 	public function update(SplSubject $render){
-		if($this->assignVar($render->output)){
+		if($this->assignVar($render->output['mail'])){
 			//changer contact.tpl par une valeur de conf suivant le type de mail envoyé
 			$this->mail->Body = $this->tpl->fetch(_TPL_.DS.'mail'.DS.'contact.tpl');
-			if ($this->sendMail()){
-				$this->setInfos('Votre demande de contact à bien été envoyé','success');
+			if ($this->sendMail()===true){
 				$render->assignVar('screen','tpl',array('file'=> './send.tpl'));
+				$this->setInfos('Votre demande de contact a bien été envoyée','success');
 			}else{
 				$this->setInfos('Erreur : une erreur s\'est produite lors de l\'envoie, merci de rééssayer ultérieurement','error');
 			}
@@ -29,29 +29,37 @@ class MailRender implements SplObserver {
 		}
 	}
 
-	public function assignVar($output){
-		if (isset($output['mail']['header']) && !empty($output['mail']['header'])){
-			$this->mail->From 		= $output['mail']['header']['email']; 
-		    $this->mail->FromName 	= $output['mail']['header']['name'];
-		    $this->mail->Subject 	= $output['mail']['header']['subject'];
-		    $this->mail->AddAddress($output['mail']['header']['to']);		    
+	public function assignVar($configMail){
+		if (isset($configMail['header']) && !empty($configMail['header'])){
+			$this->mail->From 		= $configMail['header']['email'];
+		    $this->mail->FromName 	= $configMail['header']['name'];
+		    $this->mail->Subject 	= $configMail['header']['subject'];
+		    $this->mail->AddAddress($configMail['header']['to']);		    
 		}else{
 			return false;
 		}
 
-		if (isset($output['mail']['tpl']) && !empty($output['mail']['tpl'])){
-			foreach ($output['mail']['tpl'] as $k=>$v){
+		if (isset($configMail['tpl']) && !empty($configMail['tpl'])){
+			foreach ($configMail['tpl'] as $k=>$v){
 				$this->tpl->assign($k,$v);
 			}
 		}else{
 			return false;
 		}
 
-		if (isset($output['mail']['smtp']) && !empty($output['mail']['smtp'])){
-			$this->mail->Host 		= $output['mail']['smtp']['host']; 		//"mail.safrandevilaine.fr"
-		    $this->mail->Port 		= $output['mail']['smtp']['port']; 		//25
-		    $this->mail->Username 	= $output['mail']['smtp']['username'];	//"contact@safrandevilaine.fr"
-		    $this->mail->password 	= $output['mail']['smtp']['password'];	//"GH19FXC4A"		    
+		if (isset($configMail['smtp']) && !empty($configMail['smtp'])){
+			if ($configMail['smtp']['active']==true){
+				//Activation SMTP
+	    		$this->mail->IsSMTP();
+				$this->mail->Host 		= $configMail['smtp']['host']; 		//"mail.safrandevilaine.fr"
+			    $this->mail->Port 		= $configMail['smtp']['port']; 		//25
+			    $this->mail->Username 	= $configMail['smtp']['username'];	//"contact@safrandevilaine.fr"
+			    $this->mail->Password 	= $configMail['smtp']['password'];	//"GH19FXC4A"
+			    if ($configMail['smtp']['secure']!='non'){
+			    	$this->mail->SMTPAuth = true;
+			    	$this->mail->SMTPSecure = $configMail['smtp']['secure']; //ssl ou tls
+			    }	    
+			}
 		}else{
 			return false;
 		}
@@ -62,14 +70,11 @@ class MailRender implements SplObserver {
 	public function sendMail(){
 	    $this->mail->IsHTML(true);
 	    $this->mail->CharSet = 'UTF-8';
-	    //Activation SMTP
-	    $this->mail->IsSMTP();
-	    $this->mail->SMTPAuth = true;
 
-	    /*
-	    if(!$mail->Send()) {
+	    if(!$this->mail->Send()) {
+	    	$this->mail->ClearAddresses();
 	    	return FALSE; 
-	    }*/
+	    }
 	    $this->mail->ClearAddresses();
 	    return true;		
 	}
@@ -88,8 +93,6 @@ class MailRender implements SplObserver {
 			$_SESSION['infos'] .= '<div class="alert alert-info">'.$message.'</div>';
 		}
 	}
-
 }
-
 
 ?>

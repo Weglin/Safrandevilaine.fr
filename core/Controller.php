@@ -86,28 +86,24 @@ class Controller {
 	}
 
 	/**
-	* Permet l'affichage de messages
-	**/
-	public function infos(){
-		if (isset($_SESSION['infos'])){
-			$infos=$_SESSION['infos'];
-			$this->render->assignVar('screen','tpl',array('infos'=> $infos));
-			unset($_SESSION['infos']);	
-		}
-	}
-
-	/**
-	*	Envoie de mail
+	*	Paramètre d'envoie de mail
 	**/
 	public function getSMTPparams(){
 		$this->loadModel('Config');
-		$config=$this->Config->find(array(
+		$configSMTP=$this->Config->find(array(
 									'conditions'=>array('name'=>'SMTP'),
 									'fields'=>array('param', 'value')
 									));
-	    foreach ($config as $k =>$v) {
-	    	$this->render->assignVar('mail','smtp',array($v->param=>$v->value));
+		$ConfigConn=array();
+		foreach ($configSMTP as $k =>$v) {
+	    	$ConfigSMTP[$v->param]=$v->value;
 	    }
+		$ConfigSMTP['secure']=$this->Config->findFirst(array(
+									'conditions'=>array('name'=>'ConnSMTPType',
+														'value'=>$ConfigSMTP['secure']),
+									'fields'=>'param'))->param;
+
+    	$this->render->assignVar('mail','smtp', $ConfigSMTP);
 	}
 }
 

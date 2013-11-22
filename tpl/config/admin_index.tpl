@@ -2,7 +2,16 @@
 {$infos|default:null}
 <hr />
 <h2>Options générales</h2>
-Raccourci URL de l'administration :<br />
+<div class="paramBox">
+	<form action="{Router::url('admin/config/index')}" method="post">
+		<fieldset>
+			{Form::input('name', '','general','hidden')}
+			{Form::input('shortURL', 'Raccourci URL de l\'administration :', $generalShortURL)}
+		</fieldset>
+		<input type="submit" value="Appliquer">
+		<strong>Attention : </strong>Vous devrez redémarrer l'interface de gestion avec ce nouveau paramètre après la mise à jour.
+	</form>
+</div>
 <hr />
 <h2>Gestion du Menu </h2>
 Accueil				▼ 	x<br />
@@ -12,15 +21,18 @@ Notre safranière	▲	x<br />
 <br />
 
 <hr />
-<h2>Nlk, llasdfdqs qdsd</h2><hr />
-<h2>Pllflll qqqdttht</h2><hr />
-<form action="{Router::url('admin/config/index')}" method="post">
+<div class="paramBox">
+	<h2>Paramètres E-mail</h2>
+	<div>
+		<a style="text-decoration: none;" href="{Router::url('admin/config/smtp')}">
+			<button style="float:right">Paramètres d'envoie SMTP</button>
+		</a>
+	</div>
+	<form action="{Router::url('admin/config/index')}" method="post">
 		<fieldset>
-		<legend>Paramètres mail</legend>
 			{Form::input('name', '','email','hidden')}
 			{Form::input('contact', 'E-mail de contact :', $emailContact)}
-			<input type="submit" value="Appliquer">
 		</fieldset>
+		<input type="submit" value="Appliquer">
 	</form>
-<a href="{Router::url('admin/config/SMTP')}"><button>Paramètres d'envoie SMTP</button></a>
-<hr />
+</div>
