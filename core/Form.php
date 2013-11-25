@@ -7,6 +7,9 @@ class Form{
 			$html.='<label for="input'.$name.'">'.$label.'</label>';
 		}
 		switch ($type) {
+			case 'password' :
+				$html.='<input type="'.$type.'" id="input'.$name.'" name="'.$name.'" value="'.$value.'">';
+				break;
 			case 'textarea':
 				$html.='<textarea name="'.$name.'" id="input'.$name.'" '.$options.'>'.$value.'</textarea>';
 				break;

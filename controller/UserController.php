@@ -24,7 +24,7 @@ class UserController extends Controller{
 	function admin_index() {
 		$users = $this->User->find();
 		if (empty($users)){
-			$this->setInfos ('Aucun utilisateur en base de données', 'info');
+			Session::setInfos ('Aucun utilisateur en base de données', 'info');
 		}
 		$this->render->assignVar('screen','tpl',array('users'=> $users));
 	}
@@ -57,20 +57,20 @@ class UserController extends Controller{
 			//Gestion des messages de validation /invalidation
 			if ($result===true){
 				if ($id){
-					$this->setInfos ('L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" a bien été modifié', 'success');
+					Session::setInfos ('L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" a bien été modifié', 'success');
 				}else{
-					$this->setInfos ('L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" a bien été créé', 'success');
+					Session::setInfos ('L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" a bien été créé', 'success');
 					$id=$this->User->lastEntryId();
 				}
 				
 			} else {
 				foreach ($result as $k=>$v){
-					$this->setInfos ($v, 'info');
+					Session::setInfos ($v, 'info');
 				}
 				if ($id){
-					$this->setInfos ('Erreur : L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" n\'a pas été modifié', 'error');
+					Session::setInfos ('Erreur : L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" n\'a pas été modifié', 'error');
 				}else{
-					$this->setInfos ('Erreur : L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" n\'a pas été créé', 'error');
+					Session::setInfos ('Erreur : L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" n\'a pas été créé', 'error');
 				}
 			}
 		}
@@ -91,12 +91,42 @@ class UserController extends Controller{
 	**/
 	public function admin_delete($id, $userName){
 		if ($this->User->delete($id)){
-			$this->setInfos('L\'utilisateur "'.$userName.'" a bien été supprimée de la base de donnée', 'success');			
+			Session::setInfos('L\'utilisateur "'.$userName.'" a bien été supprimée de la base de donnée', 'success');			
 		}
 		else {
-			$this->setInfos('Erreur : L\'utilisateur "'.$userName.'" n\'a pas été supprimée', 'error');
+			Session::setInfos('Erreur : L\'utilisateur "'.$userName.'" n\'a pas été supprimée', 'error');
 		}
 		$this->redirect('admin/user/index');
+	}
+
+	/**
+	* Login
+	*
+	**/
+	public function login(){
+		if($this->request->data){
+			$data = $this->request->data;
+			$data->password =sha1($data->password);
+			$user = $this->User->findFirst(array('conditions'=>array('login'=>$data->login,
+																	'password'=>$data->password)));
+			if(!empty($user)){
+				Session::setUser($user);
+
+			}
+			$this->request->data->password='';
+		}
+	}
+
+	/**
+	* Logout
+	*
+	**/
+	public function logout(){
+		if(Session::destruct('user')){
+			Session::setInfos('Vous êtes déconnecté du site', 'succes');
+		}else{
+			Session::setInfos('Un problème est aparu lors de la fermeture de votre session, merci de réessayer', 'error');
+		}
 	}
 }
 

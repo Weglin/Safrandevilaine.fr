@@ -11,16 +11,19 @@ class Render implements SplSubject{
 	
 
 	public function fetch(){
+		// Chargement des sorties souhaitées
 		$this->loadRenders();
+
+		//Création de fichier pour atacher à un mail
+
+
+		// Envoie de mail
 		if (isset($this->MailRender)){
 			$this->MailRender->update($this);
 		}
 
-
+		// Affichage d'une page dans le navigateur
 		if (isset($this->ScreenRender)){
-			//Envoyer les infos de retour d'action
-			$this->getInfos();
-			//affichage
 			$this->ScreenRender->update($this);
 		}
 	}
@@ -59,17 +62,6 @@ class Render implements SplSubject{
 				require_once $file;
 			}
 			$this->$name = new $name();
-		}
-	}
-
-		/**
-	* Permet l'affichage de messages
-	**/
-	public function getInfos(){
-		if (isset($_SESSION['infos'])){
-			$infos=$_SESSION['infos'];
-			$this->assignVar('screen','tpl',array('infos'=> $infos));
-			unset($_SESSION['infos']);	
 		}
 	}
 

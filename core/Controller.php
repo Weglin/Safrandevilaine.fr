@@ -11,7 +11,7 @@ class Controller {
 	
 	function __construct($request=null){
 		//on initialise la session
-		if(!isset($_SESSION)){session_start();}
+		//if(!isset($_SESSION)){session_start();}
 
 		// On stock la request dans l'instance
 		if ($request) {
@@ -68,42 +68,6 @@ class Controller {
 			header("HTTP/1.1 301 Moved Permanently");
 		}
 		header("Location: ".Router::url($url));
-	}
-
-	/**
-	* Permet de stocker des messages à affcher
-	**/
-	public function setInfos($message, $type=null){
-		if (!isset($_SESSION['infos'])){
-			$_SESSION['infos']=null;
-		}
-		if ($type){
-			$_SESSION['infos'] .= '<div class="alert alert-'.$type.'">'.$message.'</div>';	
-		}
-		else{
-			$_SESSION['infos'] .= '<div class="alert alert-info">'.$message.'</div>';
-		}
-	}
-
-	/**
-	*	Paramètre d'envoie de mail
-	**/
-	public function getSMTPparams(){
-		$this->loadModel('Config');
-		$configSMTP=$this->Config->find(array(
-									'conditions'=>array('name'=>'SMTP'),
-									'fields'=>array('param', 'value')
-									));
-		$ConfigConn=array();
-		foreach ($configSMTP as $k =>$v) {
-	    	$ConfigSMTP[$v->param]=$v->value;
-	    }
-		$ConfigSMTP['secure']=$this->Config->findFirst(array(
-									'conditions'=>array('name'=>'ConnSMTPType',
-														'value'=>$ConfigSMTP['secure']),
-									'fields'=>'param'))->param;
-
-    	$this->render->assignVar('mail','smtp', $ConfigSMTP);
 	}
 }
 

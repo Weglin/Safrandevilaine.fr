@@ -37,7 +37,7 @@ class MediaController extends Controller{
 		// Si des médias sont ajoutés
 		if ($this->request->data && !empty($_FILES['file']['name'])){
 			if (empty($this->request->data->rep)&& !is_numeric($this->request->data->replist)){
-				$this->setInfos('Aucun répertoire n\'a été indiqué pour le stockage de votre fichier, merci d\en indiquer un ou de le créer', 'error');
+				Session::setInfos('Aucun répertoire n\'a été indiqué pour le stockage de votre fichier, merci d\en indiquer un ou de le créer', 'error');
 			}else{
 				// simplifions quelques variables
 				$fileName=$_FILES['file']['name'];
@@ -87,12 +87,12 @@ class MediaController extends Controller{
 							'id_dossier'=>$id_dossier,
 							'file'=> $fileName,
 							'type'=>$type));
-						$this->setInfos ('Le fichier <b>" '.$fileName.' "</b> a bien été ajouté au répertoire <b>" '.$rep.' "</b>', 'success');
+						Session::setInfos ('Le fichier <b>" '.$fileName.' "</b> a bien été ajouté au répertoire <b>" '.$rep.' "</b>', 'success');
 					}else{
-						$this->setInfos ('Erreur : Le fichier <b>" '.$fileName.' "</b> existe déjà', 'error');
+						Session::setInfos ('Erreur : Le fichier <b>" '.$fileName.' "</b> existe déjà', 'error');
 					}				
 				}else{
-					$this->setInfos ('Erreur : Le fichier <b>" '.$fileName.' "</b> n\'est pas une image', 'error');
+					Session::setInfos ('Erreur : Le fichier <b>" '.$fileName.' "</b> n\'est pas une image', 'error');
 				}
 			}
 		}
@@ -130,23 +130,23 @@ class MediaController extends Controller{
 						/*on efface le répertoire*/
 						if (rmdir($dir)){
 							if($this->Dossier->delete($media->id_rep)){
-								$this->setInfos("Info : Le répertoire <b>\"".$media->rep."\"</b> étant vide, il a été effacé",'infos');
+								Session::setInfos("Info : Le répertoire <b>\"".$media->rep."\"</b> étant vide, il a été effacé",'infos');
 							}else{
-								$this->setInfos("Erreur : Le répertoire <b>\"".$media->rep."\"</b> aurait du être effacé de la BDD, mais une erreur est survenu, merci d'en avertir l'administrateur", 'error');
+								Session::setInfos("Erreur : Le répertoire <b>\"".$media->rep."\"</b> aurait du être effacé de la BDD, mais une erreur est survenu, merci d'en avertir l'administrateur", 'error');
 							}	
 						}else{
-							$this->setInfos("Le répertoire <b>\"".$media->rep."\"</b> aurait du être effacé, mais une erreur est survenu, merci d'en avertir l'administrateur", 'error');
+							Session::setInfos("Le répertoire <b>\"".$media->rep."\"</b> aurait du être effacé, mais une erreur est survenu, merci d'en avertir l'administrateur", 'error');
 						}						
 					}				
-					$this->setInfos('Le media <b>"'.$media->name.'"</b> ('.$media->rep.'/'.$media->filename.') a bien été supprimé de la BDD et effacé du serveur','success');
+					Session::setInfos('Le media <b>"'.$media->name.'"</b> ('.$media->rep.'/'.$media->filename.') a bien été supprimé de la BDD et effacé du serveur','success');
 				}else{
-					$this->setInfos("Erreur : Le fichier n'a pas pu être effacé de la BDD, merci de contacter l'administrateur",'error');
+					Session::setInfos("Erreur : Le fichier n'a pas pu être effacé de la BDD, merci de contacter l'administrateur",'error');
 				}
 			}else{
-				$this->setInfos("Erreur : Le média n'a pas pu être effacé sur le serveur, merci de contacter l'administrateur", 'error');
+				Session::setInfos("Erreur : Le média n'a pas pu être effacé sur le serveur, merci de contacter l'administrateur", 'error');
 			}
 		}else{
-			$this->setInfos("Erreur : Le média n'a pas pu être trouvé pour sa suppression, merci de contacter l'administrateur", 'error');
+			Session::setInfos("Erreur : Le média n'a pas pu être trouvé pour sa suppression, merci de contacter l'administrateur", 'error');
 		}		
 		$this->redirect('admin/media/index');
 	}

@@ -28,12 +28,12 @@ class ConfigController extends Controller{
 			$this->Config->setCustomDataRule($$dataRule);
 			$result=$this->Config->save($data);
 			if($result===true){
-				$this->setInfos ('Les paramètres ont bien été modifiés', 'success');
+				Session::setInfos ('Les paramètres ont bien été modifiés', 'success');
 			}else{
 				foreach ($result as $k=>$v){
-					$this->setInfos ($v, 'info');
+					Session::setInfos ($v, 'info');
 				}
-				$this->setInfos ('Erreur : Les paramètres n\'ont pu être modifiés', 'error');
+				Session::setInfos ('Erreur : Les paramètres n\'ont pu être modifiés', 'error');
 			}
 			foreach ($data as $k => $v) {
 				$this->render->assignVar('screen','tpl',array($name.ucfirst($k)=> $v));
@@ -93,12 +93,12 @@ class ConfigController extends Controller{
 			$this->Config->setCustomDataRule($dataRuleSMTP);
 			$result=$this->Config->save($data);
 			if($result===true){
-				$this->setInfos ('Les paramètres ont bien été modifiés', 'success');
+				Session::setInfos ('Les paramètres ont bien été modifiés', 'success');
 			}else{
 				foreach ($result as $k=>$v){
-					$this->setInfos ($v, 'info');
+					Session::setInfos ($v, 'info');
 				}
-				$this->setInfos ('Erreur : Les paramètres n\'ont pu être modifiés', 'error');
+				Session::setInfos ('Erreur : Les paramètres n\'ont pu être modifiés', 'error');
 			}
 			$this->render->assignVar('screen','tpl',array('smtp'=> $data));
 		}else{

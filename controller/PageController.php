@@ -34,7 +34,7 @@ class PageController extends Controller{
 	public function admin_index() {
 		$pages = $this->Page->find();
 		if (empty($pages)){
-			$this->setInfos('Aucune page en base de données','info');
+			Session::setInfos('Aucune page en base de données','info');
 		}
 		$this->render->assignVar('screen','tpl',array('pages'=> $pages));
 	}
@@ -57,10 +57,10 @@ class PageController extends Controller{
 
 	public function admin_delete($id){
 		if ($this->Page->delete($id)){
-			$this->setInfos('la page '.$id.' à bien été supprimée de la base de donnée', 'success');			
+			Session::setInfos('la page '.$id.' à bien été supprimée de la base de donnée', 'success');			
 		}
 		else {
-			$this->setInfos('Erreur : La page '.$id.' n\'a pas été supprimée', 'error');
+			Session::setInfos('Erreur : La page '.$id.' n\'a pas été supprimée', 'error');
 		}
 		$this->redirect('admin/page/index');
 
@@ -72,20 +72,20 @@ class PageController extends Controller{
 			$result = $this->Page->save($this->request->data);
 			if ($result===true){
 				if ($id){
-					$this->setInfos ('La page "'.$this->request->data->name.'" a bien été modifiée', 'success');
+					Session::setInfos ('La page "'.$this->request->data->name.'" a bien été modifiée', 'success');
 				}else{
-					$this->setInfos ('La page "'.$this->request->data->name.'" a bien été crée', 'success');
+					Session::setInfos ('La page "'.$this->request->data->name.'" a bien été crée', 'success');
 					$id=$this->Page->lastEntryId();
 				}
 				
 			}else{
 				foreach ($result as $k=>$v){
-					$this->setInfos ($v, 'info');
+					Session::setInfos ($v, 'info');
 				}
 				if ($id){
-					$this->setInfos ('Erreur : la page "'.$this->request->data->name.'" n\'a pas été modifiée', 'error');
+					Session::setInfos ('Erreur : la page "'.$this->request->data->name.'" n\'a pas été modifiée', 'error');
 				}else{
-					$this->setInfos ('Erreur : la page "'.$this->request->data->name.'" n\'a pas pu être créée', 'error');
+					Session::setInfos ('Erreur : la page "'.$this->request->data->name.'" n\'a pas pu être créée', 'error');
 				}				
 			}
 		}

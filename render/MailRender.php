@@ -12,6 +12,21 @@ class MailRender implements SplObserver {
 		//initialisation de PHPmailer
 		require_once ROOT.DS.'plugins'.DS.'phpmailer'.DS.'PHPMailerAutoload.php';
 		$this->mail= new phpmailer();
+
+		$configSMTP=Params::GetSMTP();
+		//Configuration du serveur d'envoie
+		if ($configSMTP['active']==true){
+			//Activation SMTP
+	    	$this->mail->IsSMTP();
+			$this->mail->Host 		= $configSMTP['host']; 		//"mail.safrandevilaine.fr"
+			$this->mail->Port 		= $configSMTP['port']; 		//25
+			$this->mail->Username 	= $configSMTP['username'];	//"contact@safrandevilaine.fr"
+			$this->mail->Password 	= $configSMTP['password'];	//"GH19FXC4A"
+			if ($configSMTP['secure']!='non'){
+			    $this->mail->SMTPAuth = true;
+			    $this->mail->SMTPSecure = $configSMTP['secure']; //ssl ou tls
+			}	    
+		}
 	}
 
 	public function update(SplSubject $render){
@@ -20,12 +35,12 @@ class MailRender implements SplObserver {
 			$this->mail->Body = $this->tpl->fetch(_TPL_.DS.'mail'.DS.'contact.tpl');
 			if ($this->sendMail()===true){
 				$render->assignVar('screen','tpl',array('file'=> './send.tpl'));
-				$this->setInfos('Votre demande de contact a bien été envoyée','success');
+				Session::setInfos('Votre demande de contact a bien été envoyée','success');
 			}else{
-				$this->setInfos('Erreur : une erreur s\'est produite lors de l\'envoie, merci de rééssayer ultérieurement','error');
+				Session::setInfos('Erreur : une erreur s\'est produite lors de l\'envoie, merci de rééssayer ultérieurement','error');
 			}
 		}else{
-			$this->setInfos('Erreur : une erreur s\'est produite lors de l\'envoie, merci de rééssayer ultérieurement','error');
+			Session::setInfos('Erreur : une erreur s\'est produite lors de l\'envoie, merci de rééssayer ultérieurement','error');
 		}
 	}
 
@@ -47,23 +62,6 @@ class MailRender implements SplObserver {
 			return false;
 		}
 
-		if (isset($configMail['smtp']) && !empty($configMail['smtp'])){
-			if ($configMail['smtp']['active']==true){
-				//Activation SMTP
-	    		$this->mail->IsSMTP();
-				$this->mail->Host 		= $configMail['smtp']['host']; 		//"mail.safrandevilaine.fr"
-			    $this->mail->Port 		= $configMail['smtp']['port']; 		//25
-			    $this->mail->Username 	= $configMail['smtp']['username'];	//"contact@safrandevilaine.fr"
-			    $this->mail->Password 	= $configMail['smtp']['password'];	//"GH19FXC4A"
-			    if ($configMail['smtp']['secure']!='non'){
-			    	$this->mail->SMTPAuth = true;
-			    	$this->mail->SMTPSecure = $configMail['smtp']['secure']; //ssl ou tls
-			    }	    
-			}
-		}else{
-			return false;
-		}
-
 		return true;
 	}
 
@@ -77,21 +75,6 @@ class MailRender implements SplObserver {
 	    }
 	    $this->mail->ClearAddresses();
 	    return true;		
-	}
-
-	/**
-	* Permet de stocker des messages à affcher
-	**/
-	public function setInfos($message, $type=null){
-		if (!isset($_SESSION['infos'])){
-			$_SESSION['infos']=null;
-		}
-		if ($type){
-			$_SESSION['infos'] .= '<div class="alert alert-'.$type.'">'.$message.'</div>';	
-		}
-		else{
-			$_SESSION['infos'] .= '<div class="alert alert-info">'.$message.'</div>';
-		}
 	}
 }
 

@@ -26,9 +26,14 @@ class ScreenRender implements SplObserver {
 
 		$view = _TPL_.DS.$render->request->controller.DS.$action.'.tpl';
 
+		// assignation des messages d'information utilisateur
+		$this->tpl->assign('infos', Session::GetInfos());
+		// assignation des variables de page
 		$this->assignVar($render->output);
-		$this->tpl->assign('body',$this->tpl->fetch($view));
 
+		// préparation de la page
+		$this->tpl->assign('body',$this->tpl->fetch($view));
+		// rendu de la page dans le layout
 		$this->tpl->display(_TPL_.DS.'layout'.DS.$this->layout($render->request).'.tpl');
 	}
 

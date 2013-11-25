@@ -32,7 +32,7 @@ class CommerceController extends Controller{
 	public function admin_index() {
 		$commerces = $this->Commerce->find();
 		if (empty($commerces)){
-			$this->setInfos('Aucun commerce en base de données','info');
+			Session::setInfos('Aucun commerce en base de données','info');
 		}
 		$this->render->assignVar('screen','tpl',array('commerces'=> $commerces));
 	}
@@ -72,20 +72,20 @@ class CommerceController extends Controller{
 			$result = $this->Commerce->save($this->request->data);
 			if ($result===true){
 				if ($id){
-					$this->setInfos ('Le commerce "'.$this->request->data->nom.'" a bien été modifié', 'success');
+					Session::setInfos ('Le commerce "'.$this->request->data->nom.'" a bien été modifié', 'success');
 				}else{
-					$this->setInfos ('Le commerce "'.$this->request->data->nom.'" a bien été créé', 'success');
+					Session::setInfos ('Le commerce "'.$this->request->data->nom.'" a bien été créé', 'success');
 					$id=$this->Commerce->lastEntryId();
 				}
 				
 			} else {
 				foreach ($result as $k=>$v){
-					$this->setInfos ($v, 'info');
+					Session::setInfos ($v, 'info');
 				}
 				if ($id){
-					$this->setInfos ('Erreur : Le commerce "'.$this->request->data->nom.'" n\'a pas été modifié', 'error');
+					Session::setInfos ('Erreur : Le commerce "'.$this->request->data->nom.'" n\'a pas été modifié', 'error');
 				}else{
-					$this->setInfos ('Erreur : Le commerce "'.$this->request->data->nom.'" n\'a pas été créé', 'error');
+					Session::setInfos ('Erreur : Le commerce "'.$this->request->data->nom.'" n\'a pas été créé', 'error');
 				}
 			}
 		}
@@ -106,10 +106,10 @@ class CommerceController extends Controller{
 
 	public function admin_delete($id,$slug){
 		if ($this->Commerce->delete($id)){
-			$this->setInfos('Le commerce "'.$slug.'" a bien été supprimée de la base de donnée', 'success');			
+			Session::setInfos('Le commerce "'.$slug.'" a bien été supprimée de la base de donnée', 'success');			
 		}
 		else {
-			$this->setInfos('Erreur : Le commerce "'.$slug.'" n\'a pas été supprimée', 'error');
+			Session::setInfos('Erreur : Le commerce "'.$slug.'" n\'a pas été supprimée', 'error');
 		}
 		$this->redirect('admin/commerce/index');
 	}

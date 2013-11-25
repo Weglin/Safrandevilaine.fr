@@ -53,7 +53,7 @@ class ActualiteController extends Controller{
 	function admin_index() {
 		$actualites = $this->Actualite->find();
 		if (empty($actualites)){
-			$this->setInfos ('Aucune actualité en base de données', 'info');
+			Session::setInfos ('Aucune actualité en base de données', 'info');
 		}
 		$this->render->assignVar('screen','tpl',array('actualites'=> $actualites));
 	}
@@ -95,20 +95,20 @@ class ActualiteController extends Controller{
 			//Gestion des messages de validation /invalidation
 			if ($result===true){
 				if ($id){
-					$this->setInfos ('L\'actualité "'.$this->request->data->name.'" a bien été modifiée', 'success');
+					Session::setInfos ('L\'actualité "'.$this->request->data->name.'" a bien été modifiée', 'success');
 				}else{
-					$this->setInfos ('L\'actualité "'.$this->request->data->name.'" a bien été créée', 'success');
+					Session::setInfos ('L\'actualité "'.$this->request->data->name.'" a bien été créée', 'success');
 					$id=$this->Actualite->lastEntryId();
 				}
 				
 			} else {
 				foreach ($result as $k=>$v){
-					$this->setInfos ($v, 'info');
+					Session::setInfos ($v, 'info');
 				}
 				if ($id){
-					$this->setInfos ('Erreur : L\'actualité "'.$this->request->data->name.'" n\'a pas été modifiée', 'error');
+					Session::setInfos ('Erreur : L\'actualité "'.$this->request->data->name.'" n\'a pas été modifiée', 'error');
 				}else{
-					$this->setInfos ('Erreur : L\'actualité "'.$this->request->data->name.'" n\'a pas été créée', 'error');
+					Session::setInfos ('Erreur : L\'actualité "'.$this->request->data->name.'" n\'a pas été créée', 'error');
 				}
 			}
 		}
@@ -129,10 +129,10 @@ class ActualiteController extends Controller{
 	**/
 	public function admin_delete($id,$slug){
 		if ($this->Actualite->delete($id)){
-			$this->setInfos('L\'actualité "'.$slug.'" a bien été supprimée de la base de donnée', 'success');			
+			Session::setInfos('L\'actualité "'.$slug.'" a bien été supprimée de la base de donnée', 'success');			
 		}
 		else {
-			$this->setInfos('Erreur : L\'actualité "'.$slug.'" n\'a pas été supprimée', 'error');
+			Session::setInfos('Erreur : L\'actualité "'.$slug.'" n\'a pas été supprimée', 'error');
 		}
 		$this->redirect('admin/actualite/index');
 	}
