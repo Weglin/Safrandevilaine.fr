@@ -27,13 +27,31 @@ class User extends Model
 				'message' => "Vous devez indiquer un pays"),
 			'email'=> array (
 				'rule' => 'mail',
-				'message' => "Cet Email est invalide"),
-			'pwd'=> array (
-				'rule' => 'password',
-				'message'=> array(
-					'inf' => "Votre mot de passe doit comporter au moins 8 caractères pour être valide",
-					'idem' => "Vous avez fait une erreur de frappe en indiquant votre mot de passe, les deux champs doivent être identiques"))
+				'message' => "Cet Email est invalide")
 		);
+	}
+
+	public function save($data){
+		//initialisation des variables
+		$this->errors=array();
+		$key=$this->primaryKey;
+
+		//demande de validation des données
+		if ($this->validates($data)===true){
+			$data = $this->cleaning($data,'pwd2');
+
+			//enregistrement des données
+			if(isset($data->$key) && !empty ($data->$key)){
+				$data=$this->cleaning($data,'pwd');
+				$sql = $this->update($data);
+			}else{
+				$sql = $this->create($data);
+			}
+			$pre = $this->db->prepare($sql);
+			return $pre->execute($this->valeurs);
+		}else{
+			return $this->errors;
+		}
 	}
 }
  ?>

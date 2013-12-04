@@ -49,9 +49,13 @@ class Conf {
 		//page de test
 		//Router::connect('test','page/view/id:18/slug:testimg');
 
-		//Connection - Déconnection
+		/****************************************************
+		*	Connection - Déconnection
+		*****************************************************/
 		Router::connect('login', 'user/login');
 		Router::connect('logout', 'user/logout');
+
+
 
 		/****************************************************
 		*	Routes pour la partie administration

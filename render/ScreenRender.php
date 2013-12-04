@@ -13,6 +13,7 @@ class ScreenRender implements SplObserver {
 	public function update(SplSubject $render){
 		//debug('on est dans le screenRender');
 		//debug($render->output);
+
 		header("Cache-Control: no-cache, must-revalidate");
 		if (isset($render->output['screen']['plugins'])){
 			if (is_int ($key = array_search('tinyMCE', $render->output['screen']['plugins'], true))) $this->addTinyMCE();
@@ -23,11 +24,21 @@ class ScreenRender implements SplObserver {
 		}else{
 			$action=$render->request->action;
 		}
+		Session::write('lastPage',substr($render->request->url,1));
 
 		$view = _TPL_.DS.$render->request->controller.DS.$action.'.tpl';
+		
+		// assignation du bandeau login (et du nom de l'utilisateur, si il existe)
+		if ($user=Session::read('user')){
+			$this->tpl->assign('tplLogFile','./logout.tpl');
+			$this->tpl->assign('user', 'Bienvenue '.$user->prenom.' '.$user->nom);	
+		}else{
+			$this->tpl->assign('tplLogFile','./login.tpl');
+		}
 
 		// assignation des messages d'information utilisateur
 		$this->tpl->assign('infos', Session::GetInfos());
+		
 		// assignation des variables de page
 		$this->assignVar($render->output);
 

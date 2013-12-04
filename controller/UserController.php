@@ -22,7 +22,7 @@ class UserController extends Controller{
 	* Fonction permettant l'affichage des actualités en vue de leur gestion
 	**/
 	function admin_index() {
-		$users = $this->User->find();
+		$users = $this->User->find(array('fields'=>array('user.id as id','nom','prenom','cp','ville','email','created')));
 		if (empty($users)){
 			Session::setInfos ('Aucun utilisateur en base de données', 'info');
 		}
@@ -33,8 +33,42 @@ class UserController extends Controller{
 	*	Permet d'ajouter un nouvel utilisateur
 	**/
 	public function admin_add(){
-		$user = new stdClass();
-		$user->created= date('Y-m-d H:i:s');
+		if($this->request->data){
+			$this->dataRule['pwd'] = array ('rule' => 'password',
+											'message'=> array(
+												'inf' => "Votre mot de passe doit comporter au moins 8 caractères pour être valide",
+												'idem' => "Vous avez fait une erreur de frappe en indiquant votre mot de passe, les deux champs doivent être identiques"));
+
+			debug($this->dataRule);
+			$user=$this->request->data;
+
+			//formatage des données
+			$user->nom=strtoupper($user->nom);
+			$user->prenom=ucfirst(strtolower($user->prenom));
+			$user->adresse=ucfirst($user->adresse);
+			$user->cp=strtoupper($user->cp);
+			$user->ville=strtoupper($user->ville);
+			$user->email=strtolower($user->email);
+			
+			//demande de sauvegarde des nouvelles données
+			$result= $this->User->save($user);
+
+			//Gestion des messages de validation /invalidation
+			if ($result===true){
+				Session::setInfos ('L\'utilisateur "'.$user->prenom.' '.$user->nom.'" a bien été créé', 'success');
+				$id=$this->User->lastEntryId();
+				die();
+				$this->redirect('admin/user/edit');
+			}else{
+				foreach ($result as $k=>$v){
+					Session::setInfos ($v, 'info');					
+				}
+				Session::setInfos ('Erreur : L\'utilisateur "'.$user->prenom.' '.$user->nom.'" n\'a pas été créé', 'error');
+			}
+		}else{
+			$user = new stdClass();
+			$user->created= date('Y-m-d H:i:s');	
+		}
 		$this->render->assignVar('screen','tpl',array('user'=> $user));
 	}
 
@@ -43,23 +77,32 @@ class UserController extends Controller{
 	**/
 	public function admin_edit($id=null){
 		if($this->request->data){
+			$user=$this->request->data;
+
+			if (isset($user->pwd) && !empty($user->pwd)){
+				$this->dataRule['pwd'] = array ('rule' => 'password',
+												'message'=> array(
+															'inf' => "Votre mot de passe doit comporter au moins 8 caractères pour être valide",
+															'idem' => "Vous avez fait une erreur de frappe en indiquant votre mot de passe, les deux champs doivent être identiques"));	
+			}
+
 			//formatage des données
-			$this->request->data->nom=strtoupper($this->request->data->nom);
-			$this->request->data->prenom=ucfirst(strtolower($this->request->data->prenom));
-			$this->request->data->adresse=ucfirst($this->request->data->adresse);
-			$this->request->data->cp=strtoupper($this->request->data->cp);
-			$this->request->data->ville=strtoupper($this->request->data->ville);
-			$this->request->data->email=strtolower($this->request->data->email);
+			$user->nom=strtoupper($user->nom);
+			$user->prenom=ucfirst(strtolower($user->prenom));
+			$user->adresse=ucfirst($user->adresse);
+			$user->cp=strtoupper($user->cp);
+			$user->ville=strtoupper($user->ville);
+			$user->email=strtolower($user->email);
 			
 			//demande de sauvegarde des nouvelles données
-			$result= $this->User->save($this->request->data);
+			$result= $this->User->save($user);
 
 			//Gestion des messages de validation /invalidation
 			if ($result===true){
 				if ($id){
-					Session::setInfos ('L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" a bien été modifié', 'success');
+					Session::setInfos ('L\'utilisateur "'.$user->prenom.' '.$user->nom.'" a bien été modifié', 'success');
 				}else{
-					Session::setInfos ('L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" a bien été créé', 'success');
+					Session::setInfos ('L\'utilisateur "'.$user->prenom.' '.$user->nom.'" a bien été créé', 'success');
 					$id=$this->User->lastEntryId();
 				}
 				
@@ -68,18 +111,18 @@ class UserController extends Controller{
 					Session::setInfos ($v, 'info');
 				}
 				if ($id){
-					Session::setInfos ('Erreur : L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" n\'a pas été modifié', 'error');
+					Session::setInfos ('Erreur : L\'utilisateur "'.$user->prenom.' '.$user->nom.'" n\'a pas été modifié', 'error');
 				}else{
-					Session::setInfos ('Erreur : L\'utilisateur "'.$this->request->data->prenom.' '.$this->request->data->nom.'" n\'a pas été créé', 'error');
+					Session::setInfos ('Erreur : L\'utilisateur "'.$user->prenom.' '.$user->nom.'" n\'a pas été créé', 'error');
 				}
 			}
 		}
 
 		//Remplissage auto des champs si des données sont disponibles (BDD ou data page précédente)
 		if ($id){
-			$user= $this->User->findFirst(array('conditions'=> array('id'=>$id)));
-			$user->pwd2=$user->pwd;	
-		} else {
+			$user= $this->User->findFirst(array('fields'=>array('user.id as id','nom','prenom','adresse','cp','ville','pays','email','created'),
+												'conditions'=> array('user.id'=>$id)));
+		}else{
 			$user=$this->request->data;
 			$user->id=null;
 		}
@@ -106,15 +149,24 @@ class UserController extends Controller{
 	public function login(){
 		if($this->request->data){
 			$data = $this->request->data;
-			$data->password =sha1($data->password);
-			$user = $this->User->findFirst(array('conditions'=>array('login'=>$data->login,
-																	'password'=>$data->password)));
+			$data->pwd =sha1($data->pwd);
+			$user = $this->User->findFirst(array('conditions'=>array('email'=>$data->email,
+																	'pwd'=>$data->pwd),
+												'fields'=>array('prenom','nom','grpuser')));
 			if(!empty($user)){
-				Session::setUser($user);
-
+				if ($user->grpuser>=100){
+					Session::write('isAdmin', 1);
+				}else{
+					Session::write('isAdmin', 0);
+				}
+				unset($user->grpuser);
+				Session::write('user',$user);				
+			}else{
+				Session::setInfos('Ces identifiants ne sont pas correct !', 'error');
 			}
 			$this->request->data->password='';
 		}
+		$this->redirect(Session::read('lastPage'));
 	}
 
 	/**
@@ -122,11 +174,12 @@ class UserController extends Controller{
 	*
 	**/
 	public function logout(){
-		if(Session::destruct('user')){
+		if(Session::destruct('user') && Session::destruct('isAdmin')){
 			Session::setInfos('Vous êtes déconnecté du site', 'succes');
 		}else{
 			Session::setInfos('Un problème est aparu lors de la fermeture de votre session, merci de réessayer', 'error');
 		}
+		$this->redirect(Session::read('lastPage'));
 	}
 }
 

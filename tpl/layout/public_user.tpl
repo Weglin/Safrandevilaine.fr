@@ -11,9 +11,12 @@
         
     </head>
     <body>
-        <header>
+        <header class="header">
             {include file='./header.tpl'}
         </header>
+        <section class="log">
+            {include file=$tplLogFile}
+        </section>
         <section class="content">
             <!-- affichage du menu -->
             {include file='./menu.tpl'}

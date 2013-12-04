@@ -105,7 +105,6 @@ class Model {
 
 	public function save($data){
 		//initialisation des variables
-		//$fields= array();
 		$this->errors=array();
 		$key=$this->primaryKey;
 

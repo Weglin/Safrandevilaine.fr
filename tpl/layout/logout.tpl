@@ -1,0 +1,2 @@
+<div style="display:inline; margin-left:40px"><span style="color: #e10244;">{$user|default:null}</span></div>
+<div style="display:inline; margin-left:590px"><a href="logout"><button>Se déconnecter</button></a></div>
