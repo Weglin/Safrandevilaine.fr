@@ -13,6 +13,8 @@ class Conf {
 				'password'=>''
 			)
 		);
+
+	static $excludePages = array('login', 'logout', 'account', 'myaccount', 'inscription');
 	
 
 	function __construct(){
@@ -50,11 +52,13 @@ class Conf {
 		//Router::connect('test','page/view/id:18/slug:testimg');
 
 		/****************************************************
-		*	Connection - Déconnection
+		*	Gestion Utilisateurs
 		*****************************************************/
 		Router::connect('login', 'user/login');
 		Router::connect('logout', 'user/logout');
-
+		Router::connect('inscription', 'user/add');
+		Router::connect('account', 'user/view');
+		Router::connect('myaccount', 'user/edit');
 
 
 		/****************************************************

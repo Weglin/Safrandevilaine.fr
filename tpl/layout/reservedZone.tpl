@@ -7,18 +7,12 @@
         <link rel="stylesheet" media="screen" href="{$CSS}/style.css">
         <link rel="shortcut icon" href="{$CSS}images/favicon.ico'" >
         <link rel="icon" type="image/gif" href="{$CSS}images/animated_favicon1.gif" >
-        {$tinyMCE|default:null}
     </head>
     <body>
         <header class="header">
             {include file='./admin_header.tpl'}
         </header>
-        <section class="log">
-            {include file=$tplLogFile}
-        </section>
         <section class="content">
-            <!-- affichage du menu -->
-            {include file='./admin_menu.tpl'}
             <!-- affichage du corps de la page-->
             {$body}
         </section>
@@ -30,8 +24,3 @@
 
     </body>
 </html>
-
-
-
-
-

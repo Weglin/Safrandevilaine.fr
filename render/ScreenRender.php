@@ -11,35 +11,34 @@ class ScreenRender implements SplObserver {
 	}
 
 	public function update(SplSubject $render){
-		//debug('on est dans le screenRender');
-		//debug($render->output);
-
 		header("Cache-Control: no-cache, must-revalidate");
 		if (isset($render->output['screen']['plugins'])){
 			if (is_int ($key = array_search('tinyMCE', $render->output['screen']['plugins'], true))) $this->addTinyMCE();
-		} 
-
-		if ($render->request->prefix=='admin'){
-			$action='admin_'.$render->request->action;
+		}
+	
+		if ($render->request->prefix==Params::getPrefix() && !Session::read('isAdmin')){
+				$controller='user';
+				$action='login';
 		}else{
 			$action=$render->request->action;
+			$controller=$render->request->controller;
 		}
-		Session::write('lastPage',substr($render->request->url,1));
+		$lastPage=trim($render->request->url,'/');
+		if (!in_array($lastPage,Conf::$excludePages)){
+			Session::write('lastPage',$lastPage);
+		}
+		unset($lastPage);		
 
-		$view = _TPL_.DS.$render->request->controller.DS.$action.'.tpl';
+		$view = _TPL_.DS.$controller.DS.$action.'.tpl';
 		
-		// assignation du bandeau login (et du nom de l'utilisateur, si il existe)
-		if ($user=Session::read('user')){
-			$this->tpl->assign('tplLogFile','./logout.tpl');
-			$this->tpl->assign('user', 'Bienvenue '.$user->prenom.' '.$user->nom);	
-		}else{
-			$this->tpl->assign('tplLogFile','./login.tpl');
-		}
+		// assignation des variables du bandeau login
+		$this->assignUserInfos();
 
-		// assignation des messages d'information utilisateur
+
+		// assignation des messages d'information utilisateur (header)
 		$this->tpl->assign('infos', Session::GetInfos());
 		
-		// assignation des variables de page
+		// assignation des variables de page (content)
 		$this->assignVar($render->output);
 
 		// préparation de la page
@@ -49,11 +48,14 @@ class ScreenRender implements SplObserver {
 	}
 
 	public function e404(SplSubject $render){
+		// assignation des variables du bandeau login
+		$this->assignUserInfos();
+
 		header("HTTP/1.0 404 Not Found");
 		$this->assignVar($render->output);
+
 		$this->tpl->assign('body',$this->tpl->fetch(_TPL_.DS.'errors'.DS.'404.tpl'));
 		$this->tpl->display(_TPL_.DS.'layout'.DS.$this->layout($render->request).'.tpl');
-
 	}
 
 	public function assignVar($output){
@@ -66,11 +68,16 @@ class ScreenRender implements SplObserver {
 
 	public function layout($request){
 		if (isset($request) && $request->prefix==true){
-			if ($request->controller=='media' && strpos($request->action, 'J')===0){
-				$layout='modal';
-			} else {
-				$layout='admin';
+			if (Session::read('isAdmin')){
+				if ($request->controller=='media' && strpos(str_replace('admin_','',$request->action), 'J')===0){
+					$layout='modal';
+				} else {
+					$layout='admin';
+				}	
+			}else{
+				$layout='reservedZone';
 			}
+
 		}else{
 			$layout=Conf::$layout;
 		}
@@ -78,6 +85,29 @@ class ScreenRender implements SplObserver {
 			$layout='test_css';
 		}
 		return $layout;	
+	}
+
+	public function assignUserInfos(){
+		$user=Session::getUser();
+		$userInfos=Session::getUserInfos();
+		if (isset($user->id)){
+			$this->tpl->assign('tplLogFile','./logout.tpl');
+			if (!empty($userInfos)){
+				$this->tpl->assign('userInfos', $userInfos);
+			}else{
+				$this->tpl->assign('userInfos', 'Bienvenue '.$user->prenom.' '.$user->nom);		
+			}
+			
+		}else{
+			$this->tpl->assign('tplLogFile','./login.tpl');
+			if (!empty($userInfos)){
+				$this->tpl->assign('userInfos', $userInfos);
+				Session::destruct('userInfos');		
+			}
+			if (isset($user->email)){
+				$this->tpl->assign('userEmail', Session::getUser()->email);
+			}
+		}	
 	}
 
 	/**

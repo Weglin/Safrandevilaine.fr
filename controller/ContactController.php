@@ -8,9 +8,6 @@ class ContactController extends Controller{
 	}
 
 	public function view(){
-		//par défaut on affiche le formulaire de contact
-		$this->render->assignVar('screen','tpl',array('file'=> './formulaire.tpl'));
-
 		//on initialise quelques variables
 		$data= new stdClass();
 
@@ -20,7 +17,6 @@ class ContactController extends Controller{
 			//on vérifie les données
 			$validated=$this->Contact->validates($data);
 			if($validated===true){
-
 				//on envoie l'entête du mail
 				$this->render->assignVar('mail','header', array(
 														'email'=>$data->email,

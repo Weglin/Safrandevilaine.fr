@@ -42,9 +42,14 @@ class User extends Model
 
 			//enregistrement des données
 			if(isset($data->$key) && !empty ($data->$key)){
-				$data=$this->cleaning($data,'pwd');
+				if (empty($data->pwd)){
+					$data=$this->cleaning($data,'pwd');	
+				}else{
+					$data->pwd=sha1($data->pwd);
+				}				
 				$sql = $this->update($data);
 			}else{
+				$data->pwd=sha1($data->pwd);
 				$sql = $this->create($data);
 			}
 			$pre = $this->db->prepare($sql);

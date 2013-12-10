@@ -1,2 +1,4 @@
-<div style="display:inline; margin-left:40px"><span style="color: #e10244;">{$user|default:null}</span></div>
-<div style="display:inline; margin-left:590px"><a href="logout"><button>Se déconnecter</button></a></div>
+<table class="login"><tr>
+<td><span style="color: #e10244;">{$userInfos|default:null}</span></td>
+<td style="text-align:right;"><a href="{Router::url('account')}"><button>Mon Compte</button></a><a href="{Router::url('logout')}"><button>Se déconnecter</button></a></td>
+</tr></table>

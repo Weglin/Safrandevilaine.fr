@@ -4,6 +4,7 @@ class Dispatcher {
 	var $request;
 
 	function __construct(){
+		new Session();
 		$this->request = new Request();
 		Router::parse($this->request->url,$this->request);
 		$controller = $this->loadController();
@@ -15,7 +16,7 @@ class Dispatcher {
 			$this->error('Le controller '.$this->request->controller.' n\'a pas de méthode '.$action);
 		}
 
-		new Session();
+
 		// Dispatcher : exécuter la méthode(action) relative au "controller" ex: /pages/view/ l'action (ou méthode) "view" du controller "pages"
 		//fonction de rappel (array(class, méthode de la class), tableau de paramètres) càd permet d'utiliser une $méthode d'une $class
 		call_user_func_array(array($controller,$action),$this->request->params);

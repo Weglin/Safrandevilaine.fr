@@ -28,6 +28,36 @@ class Session{
 		else return null;
 	}
 
+	public static function setUser($name, $value=null){
+		if (is_object($name)){
+			$_SESSION['user']=$name;
+		}else{
+			if (!isset($_SESSION['user'])){
+				$_SESSION['user']=new stdClass;	
+			}			
+			$_SESSION['user']->$name=$value;	
+		}
+	}
+
+	public static function getUser(){
+		if (isset($_SESSION['user'])){
+			return $_SESSION['user'];
+		}else{
+			return false;
+		}		
+	}
+
+	public static function setUserInfos($value){
+		$_SESSION['userInfos']=$value;
+	}
+
+	public static function getUserInfos(){
+		if (isset($_SESSION['userInfos'])){
+			return $_SESSION['userInfos'];
+		}
+		return false;
+	}
+
 	public static function write($key, $value){
 		$_SESSION[$key]=$value;
 	}
@@ -40,23 +70,21 @@ class Session{
 		}
 	}
 
-	public static function destruct($key){
+	public static function destruct($key, $propertie=null){
 		if (self::read($key)){
-			unset($_SESSION[$key]);
-			if (self::read($key)){
-				return false;
+			if ($propertie) {
+				if (is_object($_SESSION[$key]) && isset($_SESSION[$key]->$propertie)){
+					unset($_SESSION[$key]->$propertie);
+					return true;
+				}
 			}else{
+				unset($_SESSION[$key]);
 				return true;
-			}	
+			}			
 		}else{
-			return true;
+			return false;
 		}
-
-		
-
-	}
-
-
+	}	
 }
 
 ?>

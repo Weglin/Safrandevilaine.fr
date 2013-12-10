@@ -13,6 +13,7 @@
 body{
 	margin:0;
 	padding:0;
+  padding-top:5px;
 }
 
 .header{
@@ -26,14 +27,13 @@ body{
 .log{
   margin:auto;
   height:35px;
-  line-height: 35px;
   width:980px;
   background-color: rgb(245,165,8);
   box-shadow: 5px 0px 3px 1px rgba(0,0,0,0.21);  
 }
 
 body .content {
-	min-height:850px;
+	min-height:840px;
 	width: 844px;
 	margin:auto;
 	margin-top: 0px;
@@ -233,16 +233,16 @@ article p:first-letter {
 }
 
 .two_column {
+  columns: 2;
   -webkit-columns: 2;
   -moz-columns: 2;
-  columns: 2;
-  -webkit-column-gap:15px;
-  -moz-column-gap:15px;
+  
   column-gap:15px;
+  -webkit-column-gap:15px;
+  -moz-column-gap:15px;  
 }
 
 figure{
-  padding:auto;
   margin:auto;
   text-align: center;
   padding-bottom:5px;
@@ -304,8 +304,6 @@ img.uniqueDroite {
   color: #c09853;
   background-color: #fcf8e3;
   border: 1px solid #fbeed5;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
   border-radius: 4px;
 }
 
@@ -330,12 +328,16 @@ img.uniqueDroite {
 /**
 * Affichage des images dans le gestionnaire de médias
 **/
-.img_column{
+
+.img_column {
+  columns: auto 200px;
   -webkit-columns: auto 200px;
   -moz-columns: auto 200px;
-  columns: auto 200px;
   column-gap:5px;
+  -webkit-column-gap:5px;
+  -moz-column-gap:5px;
 }
+
 .element{
   display:inline-block;
   border: solid 2px rgb(209,147,23);
@@ -406,7 +408,7 @@ fieldset legend{
   background-color: rgb(182,132,176);
   color: white;
   text-shadow:1px 1px 2px rgba(0,0,0, 0.9);
-  text-transform: bold;
+  font-weight : bold;
   border :solid 2px rgb(209,147,23);
   border-radius: 5px;
   padding: 1px 12px 2px 8px;
@@ -457,8 +459,21 @@ fieldset legend{
 }
 
 /*formulaire login*/
+table.login{
+  height:100%;
+  width:100%;
+  padding-left:20px;
+  padding-right:20px;
+}
+
+.login tr{
+  vertical-align:middle;
+}
 .login.clearfix{
   display:inline;
+}
+.login form{
+  text-align: right;
 }
 
 .login div{

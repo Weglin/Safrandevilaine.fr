@@ -1,4 +1,4 @@
-<header><h1>Administration du site</h1></header>
+<header><h1>Options de configuration</h1></header>
 {$infos|default:null}
 <hr />
 <h2>Options générales</h2>

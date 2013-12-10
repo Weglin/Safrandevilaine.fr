@@ -15,7 +15,7 @@ require CORE.DS.'includes.php';
 new Conf();
 new Dispatcher();
 if (Conf::$debug>1){
-	echo '<div style="position:fixed; bottom:0; background-color:red; color:#fff; line-height:30px; height:30px;left:0; right:0; paddinf-left:10px;">';
+	echo '<div style="position:fixed; bottom:0; background-color:red; color:#fff; line-height:30px; height:30px;left:0; right:0; padding-left:10px;">';
 	echo 'Page générée en '.round(microtime(true)- $debut, 5).' secondes';
 	echo '</div>';
 }

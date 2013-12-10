@@ -1,9 +1,8 @@
-<header><h1>Édition de l'utilisateur {$user->prenom} {$user->nom}</h1></header>
+<header><h1>Mes informations personnelles</h1></header>
 {$infos|default:null}
 <hr />
-<form action="{Router::url('admin/user/edit/'|cat:$user->id)}" method="post">
+<form action="{Router::url('myaccount')}" method="post">
 	{Form::input('id', null, $user->id, 'hidden')}
-	{Form::input('created', 'Date de création :', $user->created, 'dateTime', 'disabled')}
 	<fieldset>
 		<legend>Données de l'utilisateur</legend>
 		{Form::input('nom', 'Nom :', $user->nom)}
@@ -16,10 +15,8 @@
 	</fieldset>
 	<fieldset>
 		<legend>Modifier le mot de passe</legend>
-		{Form::input('pwd', 'Mot de passe :', '', 'password')}
-		{Form::input('pwd2', 'Répéter le mot de passe :', '', 'password')}
+		{Form::input('pwd', 'Mot de passe :', null, 'password')}
+		{Form::input('pwd2', 'Répéter le mot de passe :', null, 'password')}
 	</fieldset>
-	<input type="submit" value="Valider"><a href="{Router::url('admin/user/index')}"><button type="button">Retour</button></a>
+	<input type="submit" value="Valider"><a href="{Router::url('account')}"><button type="button">Retour</button></a>
 </form>
-
-

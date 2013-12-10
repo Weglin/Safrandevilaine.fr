@@ -8,7 +8,7 @@ class Form{
 		}
 		switch ($type) {
 			case 'password' :
-				$html.='<input type="'.$type.'" id="input'.$name.'" name="'.$name.'" value="'.$value.'">';
+				$html.='<input type="'.$type.'" id="input'.$name.'" name="'.$name.'" value="'.$value.'" autocomplete="off" >';
 				break;
 			case 'textarea':
 				$html.='<textarea name="'.$name.'" id="input'.$name.'" '.$options.'>'.$value.'</textarea>';

@@ -26,7 +26,6 @@ class Router {
 	static function parse ($url,$request){
 		$url =trim($url,'/');
 		$url= $url ? $url : '/';
-
 		$params = explode('/',$url);
 
 		if (in_array($params[0],array_keys(self::$prefixes))){
@@ -35,8 +34,7 @@ class Router {
 				$url= implode('/', $params);
 			}else{
 				$url='/';	
-			}
-			
+			}	
 			foreach(Router::$adminRoutes as $v){
 				if (preg_match($v['catcher'], $url, $match)){
 					$request->controller=$v['controller'];

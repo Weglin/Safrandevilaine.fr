@@ -68,6 +68,8 @@ class Controller {
 			header("HTTP/1.1 301 Moved Permanently");
 		}
 		header("Location: ".Router::url($url));
+		exit;
+
 	}
 }
 

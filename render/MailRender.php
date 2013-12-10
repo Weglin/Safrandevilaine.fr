@@ -34,7 +34,7 @@ class MailRender implements SplObserver {
 			//changer contact.tpl par une valeur de conf suivant le type de mail envoyé
 			$this->mail->Body = $this->tpl->fetch(_TPL_.DS.'mail'.DS.'contact.tpl');
 			if ($this->sendMail()===true){
-				$render->assignVar('screen','tpl',array('file'=> './send.tpl'));
+				$render->assignVar('screen','tpl',array('file'=> './success.tpl'));
 				Session::setInfos('Votre demande de contact a bien été envoyée','success');
 			}else{
 				Session::setInfos('Erreur : une erreur s\'est produite lors de l\'envoie, merci de rééssayer ultérieurement','error');
