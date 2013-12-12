@@ -112,42 +112,45 @@ class MediaController extends Controller{
 	*	Suppression d'une image de la base de médias
 	*
 	**/
-	public function admin_delete($id,$type='img'){
-		$media=$this->Media->findFirst(array(	'fields'=>array('media.id AS id, media.name AS name, media.id_dossier AS id_rep, dos.name AS rep, media.file as filename'),
-												'conditions'=>array('media.id'=>$id)));
-		if (!empty($media)){
-			/*On définie le répertoire de travail*/
-			$dir=WEBROOT.DS.'medias'.DS.$type.DS.$media->rep;
+	public function admin_delete($id=null,$type='img'){
+		if ($id){
+			$media=$this->Media->findFirst(array(	'fields'=>array('media.id AS id, media.name AS name, media.id_dossier AS id_rep, dos.name AS rep, media.file as filename'),
+													'conditions'=>array('media.id'=>$id)));
+			if ($media){
+				/*On définie le répertoire de travail*/
+				$dir=WEBROOT.DS.'medias'.DS.$type.DS.$media->rep;
 
-			/*on efface le fichier dans le répertoire*/
-			if (unlink($dir.DS.$media->filename)){
-				/*on efface le fichier dans la BDD*/
-				if($this->Media->delete($media->id)){
-					/*on vérifie que le répertoire contient au moins un fichier*/
-					if($this->Media->findCount(array('conditions'=>array('id_dossier'=>$media->id_rep)))==0){
-						/*on ferme le répertoire*/
-						closedir($dir);
-						/*on efface le répertoire*/
-						if (rmdir($dir)){
-							if($this->Dossier->delete($media->id_rep)){
-								Session::setInfos("Info : Le répertoire <b>\"".$media->rep."\"</b> étant vide, il a été effacé",'infos');
+				/*on efface le fichier dans le répertoire*/
+				if (unlink($dir.DS.$media->filename)){
+					/*on efface le fichier dans la BDD*/
+					if($this->Media->delete($media->id)){
+						/*on vérifie que le répertoire contient au moins un fichier*/
+						if($this->Media->findCount(array('conditions'=>array('id_dossier'=>$media->id_rep)))==0){
+							/*on ferme le répertoire*/
+							closedir($dir);
+							/*on efface le répertoire*/
+							if (rmdir($dir)){
+								if($this->Dossier->delete($media->id_rep)){
+									Session::setInfos("Info : Le répertoire <b>\"".$media->rep."\"</b> étant vide, il a été effacé",'infos');
+								}else{
+									Session::setInfos("Erreur : Le répertoire <b>\"".$media->rep."\"</b> aurait du être effacé de la BDD, mais une erreur est survenu, merci d'en avertir l'administrateur", 'error');
+								}	
 							}else{
-								Session::setInfos("Erreur : Le répertoire <b>\"".$media->rep."\"</b> aurait du être effacé de la BDD, mais une erreur est survenu, merci d'en avertir l'administrateur", 'error');
-							}	
-						}else{
-							Session::setInfos("Le répertoire <b>\"".$media->rep."\"</b> aurait du être effacé, mais une erreur est survenu, merci d'en avertir l'administrateur", 'error');
-						}						
-					}				
-					Session::setInfos('Le media <b>"'.$media->name.'"</b> ('.$media->rep.'/'.$media->filename.') a bien été supprimé de la BDD et effacé du serveur','success');
+								Session::setInfos("Le répertoire <b>\"".$media->rep."\"</b> aurait du être effacé, mais une erreur est survenu, merci d'en avertir l'administrateur", 'error');
+							}						
+						}				
+						Session::setInfos('Le media <b>"'.$media->name.'"</b> ('.$media->rep.'/'.$media->filename.') a bien été supprimé de la BDD et effacé du serveur','success');
+					}else{
+						Session::setInfos("Erreur : Le fichier n'a pas pu être effacé de la BDD, merci de contacter l'administrateur",'error');
+					}
 				}else{
-					Session::setInfos("Erreur : Le fichier n'a pas pu être effacé de la BDD, merci de contacter l'administrateur",'error');
+					Session::setInfos("Erreur : Le média n'a pas pu être effacé sur le serveur, merci de contacter l'administrateur", 'error');
 				}
 			}else{
-				Session::setInfos("Erreur : Le média n'a pas pu être effacé sur le serveur, merci de contacter l'administrateur", 'error');
-			}
-		}else{
-			Session::setInfos("Erreur : Le média n'a pas pu être trouvé pour sa suppression, merci de contacter l'administrateur", 'error');
-		}		
+				Session::setInfos("Erreur : Le média n'a pas pu être trouvé pour sa suppression, merci de contacter l'administrateur", 'error');
+			}		
+
+		}
 		$this->redirect('admin/media/index');
 	}
 

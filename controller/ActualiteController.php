@@ -127,12 +127,18 @@ class ActualiteController extends Controller{
 	/**
 	*	Permet la suppression d'une actualité
 	**/
-	public function admin_delete($id,$slug){
-		if ($this->Actualite->delete($id)){
-			Session::setInfos('L\'actualité "'.$slug.'" a bien été supprimée de la base de donnée', 'success');			
-		}
-		else {
-			Session::setInfos('Erreur : L\'actualité "'.$slug.'" n\'a pas été supprimée', 'error');
+	public function admin_delete($id=null){
+		if($id){
+			$actualite=$this->Actualite->findFirst(array('fields'=>array('slug'),
+														'conditions'=>array('id'=>$id)));
+			if ($actualite){
+				if ($this->Actualite->delete($id)){
+					Session::setInfos('L\'actualité "'.$actualite->slug.'" a bien été supprimée de la base de donnée', 'success');			
+				}
+				else {
+					Session::setInfos('Erreur : L\'actualité "'.$actualite->slug.'" n\'a pas été supprimée', 'error');
+				}
+			}
 		}
 		$this->redirect('admin/actualite/index');
 	}

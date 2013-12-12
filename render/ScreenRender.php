@@ -30,7 +30,6 @@ class ScreenRender implements SplObserver {
 		unset($lastPage);		
 
 		$view = _TPL_.DS.$controller.DS.$action.'.tpl';
-		
 		// assignation des variables du bandeau login
 		$this->assignUserInfos();
 

@@ -1,7 +1,7 @@
 <ul id="menu">
    <li><a href="{Router::url('admin')}">Général</a></li>
    <li><a href="{Router::url('admin/user/index')}">Utilisateurs</a></li>
-   <li><a href="{Router::url('admin/produit/index')}">Produits</a></li>
+   <li><a href="{Router::url('admin/article/index')}">Articles</a></li>
    <li><a href="{Router::url('admin/commande/index')}">Commandes</a></li>
    <li><a href="{Router::url('admin/actualite/index')}">Actualité</a></li>
    <li><a href="{Router::url('admin/album/index')}">Album</a></li>

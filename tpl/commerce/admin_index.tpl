@@ -22,7 +22,7 @@
 		<td>{$element->vente}</td>
 		<td>{$element->online}</td>
 		<td><a href="{Router::url('admin/commerce/edit/'|cat:$element->id)}"><button>Editer</button></a></td>
-		<td><a onclick="return confirm('Êtes vous sûr de vouloir supprimer ce commerce ?\n\n(Vous pouver le mettre hors-ligne avant sa suppression définitive)');" href="{Router::url('admin/commerce/delete/'|cat:$element->id|cat:'/'|cat:$element->nom)}"><button>Supprimer</button></a></td>	
+		<td><a onclick="return confirm('Êtes vous sûr de vouloir supprimer ce commerce ?\n\n(Vous pouver le mettre hors-ligne avant sa suppression définitive)');" href="{Router::url('admin/commerce/delete/'|cat:$element->id)}"><button>Supprimer</button></a></td>	
 	</tr>
 {/foreach}
 </table>

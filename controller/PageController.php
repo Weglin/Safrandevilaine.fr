@@ -55,12 +55,18 @@ class PageController extends Controller{
 
 	}
 
-	public function admin_delete($id){
-		if ($this->Page->delete($id)){
-			Session::setInfos('la page '.$id.' à bien été supprimée de la base de donnée', 'success');			
-		}
-		else {
-			Session::setInfos('Erreur : La page '.$id.' n\'a pas été supprimée', 'error');
+	public function admin_delete($id=null){
+		if ($id){
+			$page=$this->Page->findFirst(array('fields'=>array('name'),
+													'conditions'=>array('id'=>$id)));
+			if($page){
+				if ($this->Page->delete($id)){
+					Session::setInfos('la page '.$page->name.' à bien été supprimée de la base de donnée', 'success');			
+				}
+				else {
+					Session::setInfos('Erreur : La page '.$page->name.' n\'a pas été supprimée', 'error');
+				}	
+			}						
 		}
 		$this->redirect('admin/page/index');
 

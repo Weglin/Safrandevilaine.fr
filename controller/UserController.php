@@ -57,8 +57,8 @@ class UserController extends Controller{
 	public function view(){
 		$user=Session::getUser();
 		if (!empty($user)){
-			$user=$this->User->findFirst(array(	'fields'=>array('id as id','nom','prenom','adresse','cp','ville','pays','email','created'),
-												'conditions'=> array('user.id'=>$user->id)));
+			$user=$this->User->findFirst(array(	'fields'=>array('id','nom','prenom','adresse','cp','ville','pays','email','created'),
+												'conditions'=> array('id'=>$user->id)));
 			$this->render->assignVar('screen','tpl', array('user' => $user));			
 		}else{
 			$this->redirect('accueil');
@@ -66,8 +66,8 @@ class UserController extends Controller{
 	}
 
 	public function edit(){
-		$user=$this->User->findFirst(array(	'fields'=>array('id as id','nom','prenom','adresse','cp','ville','pays','email','created'),
-												'conditions'=> array('user.id'=>Session::getUser()->id)));
+		$user=$this->User->findFirst(array(	'fields'=>array('id','nom','prenom','adresse','cp','ville','pays','email','created'),
+												'conditions'=> array('id'=>Session::getUser()->id)));
 		if($this->request->data){
 			$user=$this->request->data;
 			if (isset($user->pwd) && !empty($user->pwd)){
@@ -104,7 +104,7 @@ class UserController extends Controller{
 	* Fonction permettant l'affichage des actualités en vue de leur gestion
 	**/
 	function admin_index() {
-		$users = $this->User->find(array('fields'=>array('id as id','nom','prenom','cp','ville','email','created')));
+		$users = $this->User->find(array('fields'=>array('id','nom','prenom','cp','ville','email','created')));
 		if (empty($users)){
 			Session::setInfos ('Aucun utilisateur en base de données', 'info');
 		}
@@ -211,12 +211,17 @@ class UserController extends Controller{
 	/**
 	*	Permet la suppression d'un utilisateur
 	**/
-	public function admin_delete($id, $userName){
-		if ($this->User->delete($id)){
-			Session::setInfos('L\'utilisateur "'.$userName.'" a bien été supprimée de la base de donnée', 'success');			
-		}
-		else {
-			Session::setInfos('Erreur : L\'utilisateur "'.$userName.'" n\'a pas été supprimée', 'error');
+	public function admin_delete($id=null){
+		if ($id){
+			$user=$this->User->findFirst(array('fields'=>array('nom','prenom'),
+													'conditions'=>array('id'=>$id)));
+			if($user){
+				if ($this->User->delete($id)){
+					Session::setInfos('L\'utilisateur "'.$user->prenom.' '.$user->nom.'" a bien été supprimée de la base de donnée', 'success');			
+				}else{
+					Session::setInfos('Erreur : L\'utilisateur "'.$user->prenom.' '.$user->nom.'" n\'a pas été supprimée', 'error');
+				}
+			}	
 		}
 		$this->redirect('admin/user/index');
 	}
@@ -257,11 +262,13 @@ class UserController extends Controller{
 	*
 	**/
 	public function logout(){
+		
+
 		if(Session::destruct('user') && Session::destruct('isAdmin')){
 			Session::setUserInfos('Vous êtes déconnecté du site');
 		}else{
 			Session::setUserInfos('Un problème est aparu, merci de réessayer');
-		}
+		}		
 		$this->redirect(Session::read('lastPage'));
 	}
 }

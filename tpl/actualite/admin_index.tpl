@@ -18,7 +18,7 @@
 		<td>{$element->compte_id}</td>
 		<td>{$element->online}</td>
 		<td><a href="{Router::url('admin/actualite/edit/'|cat:$element->id)}"><button>Editer</button></a></td>
-		<td><a onclick="return confirm('Êtes vous sûr de vouloir supprimer cette actualité ?\n\n(Vous pouver la mettre hors-ligne avant sa suppression définitive)');" href="{Router::url('admin/actualite/delete/'|cat:$element->id|cat:'/'|cat:$element->name)}"><button>Supprimer</button></a></td>	
+		<td><a onclick="return confirm('Êtes vous sûr de vouloir supprimer cette actualité ?\n\n(Vous pouver la mettre hors-ligne avant sa suppression définitive)');" href="{Router::url('admin/actualite/delete/'|cat:$element->id)}"><button>Supprimer</button></a></td>	
 	</tr>
 {/foreach}
 </table>

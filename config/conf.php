@@ -40,7 +40,7 @@ class Conf {
 
 		//Pages dynamiques ou modules
 		//Liens à générer comme au dessus
-		Router::connect('produits', 'produit/index');		
+		Router::connect('produits', 'article/index');		
 		Router::connect('degustation', 'commerce/index/slug:degustation');
 		Router::connect('commerces', 'commerce/index/slug:vente');
 		Router::connect('contact', 'contact/view');

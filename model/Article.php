@@ -1,5 +1,5 @@
 <?php
-class Produit extends Model{
+class Article extends Model{
 
 	function __construct (){
 		parent::__construct();

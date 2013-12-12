@@ -104,12 +104,18 @@ class CommerceController extends Controller{
 	*	Permet la suppression d'un commerce
 	**/
 
-	public function admin_delete($id,$slug){
-		if ($this->Commerce->delete($id)){
-			Session::setInfos('Le commerce "'.$slug.'" a bien été supprimée de la base de donnée', 'success');			
-		}
-		else {
-			Session::setInfos('Erreur : Le commerce "'.$slug.'" n\'a pas été supprimée', 'error');
+	public function admin_delete($id=null){
+		if ($id){
+			$commerce=$this->Commerce->findFirst(array('fields'=>array('nom'),
+													'conditions'=>array('id'=>$id)));
+			if($commerce){
+				if ($this->Commerce->delete($id)){
+					Session::setInfos('Le commerce "'.$commerce->nom.'" a bien été supprimée de la base de donnée', 'success');			
+				}
+				else {
+					Session::setInfos('Erreur : Le commerce "'.$commerce->nom.'" n\'a pas été supprimée', 'error');
+				}
+			}
 		}
 		$this->redirect('admin/commerce/index');
 	}

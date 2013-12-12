@@ -97,10 +97,8 @@ class Model {
 	}
 
 	public function delete($id){
-		//$sql = 'DELETE FROM '.$this->table.' WHERE '.$this->primaryKey.'='.$id.'';
 		$sql=$this->requete->delete($id);
 		return $this->db->query($this->requete->delete($id));
-
 	}
 
 	public function save($data){

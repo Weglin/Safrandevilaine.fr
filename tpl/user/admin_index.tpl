@@ -20,7 +20,7 @@
 		<td>{$element->email}</td>
 		<td>{$element->created}</td>
 		<td><a href="{Router::url('admin/user/edit/'|cat:$element->id)}"><button>Editer</button></a></td>
-		<td><a onclick="return confirm('Êtes vous sûr de vouloir supprimer cet utilisateur ?\n\nCette opération est définitive et peut provoquer des erreurs dans l'application.\nNe supprimer cet utilisateur que si vous savez exactement ce que vous faite !');" href="{Router::url('admin/user/delete/'|cat:$element->id|cat:'/'|cat:$element->prenom|cat:' '|cat:$element->nom)}"><button>Supprimer</button></a></td>	
+		<td><a onclick="return confirm('Êtes vous sûr de vouloir supprimer cet utilisateur ?\n\nCette opération est définitive et peut provoquer des erreurs dans l\'application.\nSupprimer cet utilisateur seulement si vous savez exactement ce que vous faite !');" href="{Router::url('admin/user/delete/'|cat:$element->id)}"><button>Supprimer</button></a></td>	
 	</tr>
 {/foreach}
 </table>
